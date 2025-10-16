@@ -6,6 +6,7 @@
         <sourceOutputDir name="target/generated-sources/annotations" />
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
+        <module name="config-server" />
         <module name="category-service" />
         <module name="discovery-server" />
         <module name="book-service" />
@@ -24,6 +25,7 @@
       <module name="author-service" options="-parameters" />
       <module name="book-service" options="-parameters" />
       <module name="category-service" options="-parameters" />
+      <module name="config-server" options="-parameters" />
       <module name="discovery-server" options="-parameters" />
       <module name="fine-service" options="-parameters" />
       <module name="gateway-server" options="-parameters" />
