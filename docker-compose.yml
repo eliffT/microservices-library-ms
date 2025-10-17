@@ -1,0 +1,49 @@
+services:
+  config-server:
+    image: melistogan/ls-config-server
+    ports:
+      - "8989:8989"
+  discovery-server:
+    image: melistogan/ls-discovery-server
+    ports:
+      - "8761:8761"
+  author-service:
+    image: melistogan/ls-author-service
+    ports:
+      - "8080:8080"
+  book-service:
+    image: melistogan/ls-book-service
+    ports:
+      - "8081:8081"
+  category-service:
+    image: vendetta1903/ls-category-service
+    ports:
+      - "8082:8082"
+  fine-service:
+    image: vendetta1903/ls-fine-service
+    ports:
+      - "8083:8083"
+  loan-service:
+    image: vendetta1903/ls-loan-service
+    ports:
+      - "8084:8084"
+  publisher-service:
+    image: vendetta1903/ls-publisher-service
+    ports:
+      - "8085:8085"
+  reservation-service:
+    image: eliftasdemir/ls-reservation-service
+    ports:
+      - "8086:8086"
+  user-service:
+    image: eliftasdemir/ls-user-service
+    ports:
+      - "8087:8087"
+  gateway-server:
+    image: vendetta1903/ls-gateway-server
+    ports:
+      - "8888:8888"
+    depends_on:
+      - config-server
+    environment:
+      - CONFIG_URI=http://config-server:8989
