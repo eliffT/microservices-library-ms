@@ -1,6 +1,6 @@
 spring:
   application:
-    name: user-service
+    name: borrow-service
   profiles:
     active: dev
   config:
