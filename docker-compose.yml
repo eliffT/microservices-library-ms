@@ -10,6 +10,17 @@ services:
     volumes:
       - bookdb_vol:/var/lib/postgresql/data
 
+  usersv_db:
+    image: postgres:16
+    environment:
+      POSTGRES_DB: user_service
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: user_service_db_password
+    ports:
+      - 5435:5432
+    volumes:
+      - userdb_vol:/var/lib/postgresql/data
+
   kafka:
     image: apache/kafka:3.8.0
     container_name: kafkaui
@@ -92,4 +103,5 @@ volumes:
   kafka-data: { }
   kc_pg_data: { }
   bookdb_vol: { }
+  userdb_vol: { }
 
