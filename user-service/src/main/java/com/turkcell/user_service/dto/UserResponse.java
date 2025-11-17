@@ -1,10 +1,11 @@
 package com.turkcell.user_service.dto;
 
 
+import java.util.UUID;
 
 public class UserResponse {
 
-    private Integer id;
+    private UUID id;
     private String firstName;
     private String lastName;
     private String email;
@@ -14,7 +15,7 @@ public class UserResponse {
     public UserResponse() {
     }
 
-    public UserResponse(Integer id, String firstName, String lastName, String email, String phone) {
+    public UserResponse(UUID id, String firstName, String lastName, String email, String phone) {
         this.id = id;
         this.firstName = firstName;
         this.lastName = lastName;
@@ -22,11 +23,11 @@ public class UserResponse {
         this.phone = phone;
     }
 
-    public Integer getId() {
+    public UUID getId() {
         return id;
     }
 
-    public void setId(Integer id) {
+    public void setId(UUID id) {
         this.id = id;
     }
 

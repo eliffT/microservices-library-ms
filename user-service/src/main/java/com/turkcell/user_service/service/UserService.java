@@ -34,10 +34,10 @@ public class UserService {
 
     public UserResponse createUser(@Valid UserRequest request) {
         // DTO - Entity
-        User user = userMapper.userRequestToUser(request);
+        User user = userMapper.toEntity(request);
         userRepository.save(user);
         // Entity - DTO
-        return userMapper.userToUserResponse(user);
+        return userMapper.toResponse(user);
     }
 
     public UserResponse updateUser(UUID id, @Valid UserRequest request) {
@@ -51,7 +51,7 @@ public class UserService {
         updateUser.setPhone(request.getPhone());
         userRepository.save(updateUser);
 
-        return userMapper.userToUserResponse(updateUser);
+        return userMapper.toResponse(updateUser);
     }
 
     public void deleteUser(UUID id) {
@@ -63,12 +63,12 @@ public class UserService {
 
     public UserResponse getUserById(UUID id) {
         User user = userRepository.findById(id).orElseThrow(()-> new RuntimeException("User not found"));
-        return userMapper.userToUserResponse(user);
+        return userMapper.toResponse(user);
     }
 
     public List<UserResponse> getAllUsers() {
         List<User> users = userRepository.findAll();
-        return userMapper.userToUserResponseList(users);
+        return userMapper.toResponseList(users);
     }
 
     public UserResponse findUserByEmail(String status, String email) {
@@ -77,7 +77,7 @@ public class UserService {
         if(!checkUserStatus.equalsIgnoreCase(status)){
             throw new NotFoundException("User not found with email: " + email);
         }
-        return userMapper.userToUserResponse(user);
+        return userMapper.toResponse(user);
     }
 
 
@@ -87,7 +87,7 @@ public class UserService {
             user.setMembershipLevel(MembershipLevel.valueOf(value));
             userRepository.save(user);
         }
-        return userMapper.userToUserResponse(user);
+        return userMapper.toResponse(user);
     }
 
 

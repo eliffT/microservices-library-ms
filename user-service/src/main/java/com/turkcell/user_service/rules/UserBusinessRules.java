@@ -4,7 +4,9 @@ import com.turkcell.user_service.entity.MembershipLevel;
 import com.turkcell.user_service.entity.User;
 import com.turkcell.user_service.repository.UserRepository;
 import jakarta.ws.rs.NotFoundException;
+import org.springframework.stereotype.Component;
 
+@Component
 public class UserBusinessRules {
     private final UserRepository userRepository;
 
