@@ -21,7 +21,7 @@ spring:
     # Üretici (Producer) Ayarları (Book Stock Changed Event yayınlamak için)
     producer:
       key-serializer: org.apache.kafka.common.serialization.StringSerializer
-      value-serializer: org.apache.kafka.common.serialization.StringSerializer
+      value-serializer: org.springframework.kafka.support.serializer.JsonSerializer # ✅ Bu doğru
       acks: 1
       # Ağ hatası olursa 3 kez tekrar dene
       retries: 3
