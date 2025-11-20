@@ -1,0 +1,10 @@
+com\turkcell\common\events\BookStockChangedEvent.class
+com\turkcell\common\events\LoanCreatedEvent.class
+com\turkcell\common\events\ReservationCancelledEvent.class
+com\turkcell\common\events\LoanReturnedEvent.class
+com\turkcell\common\events\BookCreatedEvent.class
+com\turkcell\common\events\FineCreatedEvent.class
+com\turkcell\common\events\FinePaidEvent.class
+com\turkcell\common\events\DomainEvent.class
+com\turkcell\common\events\ReservationCreatedEvent.class
+com\turkcell\common\events\ReservationFulfilledEvent.class

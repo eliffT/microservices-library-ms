@@ -13,6 +13,7 @@
         <module name="borrow-service" />
         <module name="gateway-server" />
         <module name="user-service" />
+        <module name="common-events" />
       </profile>
     </annotationProcessing>
     <bytecodeTargetLevel>
@@ -31,6 +32,7 @@
       <module name="book-service" options="-parameters" />
       <module name="borrow-service" options="-parameters" />
       <module name="category-service" options="-parameters" />
+      <module name="common-events" options="-parameters" />
       <module name="config-server" options="-parameters" />
       <module name="discovery-server" options="-parameters" />
       <module name="fine-service" options="-parameters" />

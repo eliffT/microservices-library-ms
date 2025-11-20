@@ -1,13 +1,16 @@
 package com.turkcell.bookservice.domain.model.book;
 
+import com.turkcell.bookservice.domain.model.BaseAggregateRoot;
 import com.turkcell.bookservice.domain.model.DomainId;
 import com.turkcell.bookservice.domain.model.author.Author;
 import com.turkcell.bookservice.domain.model.category.Category;
 import com.turkcell.bookservice.domain.model.publisher.Publisher;
+import com.turkcell.common.events.BookCreatedEvent;
+import com.turkcell.common.events.BookStockChangedEvent;
 
 import java.math.BigDecimal;
 
-public class Book {
+public class Book extends BaseAggregateRoot {
     private final DomainId<Book> id;
     private final DomainId<Author> authorId;
     private final DomainId<Publisher> publisherId;
@@ -21,6 +24,7 @@ public class Book {
     private Integer availableCopies;
     private BookStatus status;
     private BigDecimal price;
+
 
 
     private Book(DomainId<Book> id, Isbn isbn, String title, Integer year, String language, Integer totalCopies,
@@ -49,9 +53,15 @@ public class Book {
         checkPrice(price);
         Isbn isbn = Isbn.generate();
 
-        return new Book(DomainId.generate(), isbn,  title, year, language,
+        Book book =  new Book(DomainId.generate(), isbn,  title, year, language,
                 totalCopies, totalCopies, BookStatus.ACTIVE,
                 authorId, publisherId, categoryId, price);
+
+        book.registerEvent(new BookCreatedEvent(
+                book.id().value(), book.isbn.value(), title,
+                authorId.value(), publisherId.value(), categoryId.value(), book.totalCopies));
+
+        return book;
     }
 
     public static Book rehydrate(DomainId<Book> id, Isbn isbn, String title, Integer year, String language,
@@ -64,10 +74,19 @@ public class Book {
     }
 
     public void restock(Integer quantityToRestock) {
+        if (quantityToRestock == null || quantityToRestock <= 0)
+            throw new IllegalArgumentException("Quantity to restock must be greater than 0");
+
         checkAmount(quantityToRestock);
         this.totalCopies += quantityToRestock;
         this.availableCopies += quantityToRestock;
-        ensureStockConsistency(this.totalCopies, this.availableCopies);
+        ensureStockConsistency();
+
+        this.registerEvent(new BookStockChangedEvent(
+                this.id().value(),
+                this.availableCopies,
+                "InventoryRestock"
+        ));
     }
 
     public void rename(String title) {
@@ -120,14 +139,14 @@ public class Book {
     }
 
     private static void validateTitle(String title){
-        if(title == null || title.isEmpty())
-            throw new IllegalArgumentException("Title cannot be null or empty");
+        if(title == null || title.trim().isEmpty())
+            throw new IllegalArgumentException("Title cannot be null or whitespace");
         if(title.length() >= 255)
             throw new IllegalArgumentException("Title length must be less than 255 characters");
     }
 
     private static void validateLanguage(String language){
-        if(language == null || language.isEmpty())
+        if(language == null || language.trim().isEmpty())
             throw new IllegalArgumentException("Language cannot be null or empty");
         if(language.length() < 2 || language.length() > 15)
             throw new IllegalArgumentException("Language length must be between 2 and 15 characters");
@@ -138,7 +157,9 @@ public class Book {
             throw new IllegalArgumentException("Amount must be greater than 0");
     }
 
-    private static void ensureStockConsistency(Integer totalCopies, Integer availableCopies) {
+    private void ensureStockConsistency() {
+        if (this.availableCopies < 0)
+            throw new IllegalStateException("Available copies cannot be negative");
         if (availableCopies > totalCopies) {
             throw new IllegalArgumentException("Available copies cannot exceed total copies");
         }

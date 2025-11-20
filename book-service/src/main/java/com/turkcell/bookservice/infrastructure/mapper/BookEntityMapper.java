@@ -1,15 +1,12 @@
 package com.turkcell.bookservice.infrastructure.mapper;
 
 import com.turkcell.bookservice.domain.model.DomainId;
-import com.turkcell.bookservice.domain.model.author.Author;
 import com.turkcell.bookservice.domain.model.book.Book;
 import com.turkcell.bookservice.domain.model.book.Isbn;
-import com.turkcell.bookservice.domain.model.category.Category;
-import com.turkcell.bookservice.domain.model.publisher.Publisher;
-import com.turkcell.bookservice.infrastructure.entity.AuthorEntity;
-import com.turkcell.bookservice.infrastructure.entity.BookEntity;
-import com.turkcell.bookservice.infrastructure.entity.CategoryEntity;
-import com.turkcell.bookservice.infrastructure.entity.PublisherEntity;
+import com.turkcell.bookservice.infrastructure.persistence.entity.AuthorEntity;
+import com.turkcell.bookservice.infrastructure.persistence.entity.BookEntity;
+import com.turkcell.bookservice.infrastructure.persistence.entity.CategoryEntity;
+import com.turkcell.bookservice.infrastructure.persistence.entity.PublisherEntity;
 import org.springframework.stereotype.Component;
 
 @Component
@@ -26,6 +23,7 @@ public class BookEntityMapper {
         bookEntity.setTotalCopies(book.totalCopies());
         bookEntity.setAvailableCopies(book.availableCopies());
         bookEntity.setStatus(book.status());
+
         if (book.authorId() != null) {
             bookEntity.setAuthor(new AuthorEntity(book.authorId().value()));
         }
@@ -41,7 +39,7 @@ public class BookEntityMapper {
 
     public Book toDomain(BookEntity entity) {
         return Book.rehydrate(
-                new DomainId<Book>(entity.id()),
+                new DomainId<>(entity.id()),
                 new Isbn(entity.isbn()),
                 entity.title(),
                 entity.year(),
@@ -49,9 +47,9 @@ public class BookEntityMapper {
                 entity.totalCopies(),
                 entity.availableCopies(),
                 entity.status(),
-                new DomainId<Author>(entity.author().id()),
-                new DomainId<Publisher>(entity.publisher().id()),
-                new DomainId<Category>(entity.category().id()),
+                entity.author() == null ? null : new DomainId<>(entity.author().id()),
+                entity.publisher() == null ? null: new DomainId<>(entity.publisher().id()),
+                entity.category() == null ? null : new DomainId<>(entity.category().id()),
                 entity.price()
         );
     }

@@ -1,8 +1,9 @@
 package com.turkcell.bookservice.domain.model.category;
 
+import com.turkcell.bookservice.domain.model.BaseAggregateRoot;
 import com.turkcell.bookservice.domain.model.DomainId;
 
-public class Category {
+public class Category extends BaseAggregateRoot {
 
     private final DomainId<Category> id;
     private String name;
