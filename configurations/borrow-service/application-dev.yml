@@ -18,7 +18,7 @@ spring:
     show-sql: true
 
   kafka:
-    bootstrap-servers: localhost:9092
+    bootstrap-servers: localhost:9094
 
     # Üretici (Producer) Ayarları (Outbox Relayer Job'ın Kafka'ya göndermesi için)
     producer:
