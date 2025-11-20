@@ -13,5 +13,5 @@ public interface DomainEvent {
     UUID getAggregateId();
 
     // Hangi aggregate'a ait?
-    AggregateType aggregateType();
+    AggregateType getAggregateType();
 }

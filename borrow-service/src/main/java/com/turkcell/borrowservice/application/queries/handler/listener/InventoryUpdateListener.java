@@ -39,7 +39,7 @@ public class InventoryUpdateListener {
             InboxMessage inboxMessage = new InboxMessage(
                     event.getEventId(), // Event ID'si, Inbox'ın PK'sıdır
                     event.getAggregateId(),
-                    event.aggregateType().toString() // BOOK
+                    event.getAggregateType().toString() // BOOK
             );
             inboxRepository.saveAndFlush(inboxMessage);
 

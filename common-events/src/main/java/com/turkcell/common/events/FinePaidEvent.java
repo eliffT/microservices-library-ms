@@ -34,7 +34,7 @@ public record FinePaidEvent (
     }
 
     @Override
-    public AggregateType aggregateType() {
+    public AggregateType getAggregateType() {
         return AggregateType.FINE;
     }
 }

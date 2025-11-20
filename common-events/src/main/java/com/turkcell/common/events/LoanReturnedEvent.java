@@ -31,7 +31,7 @@ public record LoanReturnedEvent (
         }
 
     @Override
-    public AggregateType aggregateType() {
+    public AggregateType getAggregateType() {
         return AggregateType.LOAN;
     }
 }
