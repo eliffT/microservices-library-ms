@@ -1,34 +1,74 @@
 package com.turkcell.borrowservice.domain.model;
 
+import com.turkcell.common.events.FineCreatedEvent;
+import com.turkcell.common.events.FinePaidEvent;
 
 import java.math.BigDecimal;
-import java.time.LocalDate;
+import java.time.OffsetDateTime;
+import java.util.UUID;
 
-public final class Fine {
+public final class Fine extends BaseAggregateRoot {
+    private final DomainId<Fine> id;
+    private final UUID userId;
+    private final UUID loanId;
     private final BigDecimal amount;
     private final String reason;
-    private final LocalDate createdAt;
+    private OffsetDateTime createdAt;
+    private boolean isPaid = false;
+    private OffsetDateTime paymentDate;
 
-    private Fine(BigDecimal amount, String reason) {
+    private Fine(DomainId<Fine> id, UUID userId, UUID loanId, BigDecimal amount, String reason) {
+        this.id = id;
+        this.userId = userId;
+        this.loanId = loanId;
         validateAmount(amount);
         validateReason(reason);
         this.amount = amount;
         this.reason = reason;
-        this.createdAt = LocalDate.now();
+        this.createdAt = OffsetDateTime.now();
     }
 
-    public static Fine of(BigDecimal amount, String reason) {
-        return new Fine(amount, reason);
+    public static Fine rehydrate(
+            DomainId<Fine> id, UUID userId, UUID loanId, BigDecimal amount,
+            String reason, OffsetDateTime createdAt, boolean isPaid, OffsetDateTime paymentDate)
+    {
+        Fine fine = new Fine(id, userId, loanId, amount, reason);
+        fine.createdAt = createdAt;
+        fine.isPaid = isPaid;
+        fine.paymentDate = paymentDate;
+        return fine;
     }
 
-    public static Fine forLate(int daysLate, BigDecimal dailyFee) {
+    public static Fine of(UUID userId, UUID loanId, BigDecimal amount, String reason) {
+        return new Fine(DomainId.generate(), userId, loanId, amount, reason);
+    }
+
+    public static Fine forLate(UUID userId, UUID loanId, int daysLate, BigDecimal dailyFee) {
         if(dailyFee == null) throw new IllegalArgumentException("Daily fee cannot be null");
         if(daysLate <= 0) throw new IllegalArgumentException("Days late must be > 0");
-        return new Fine(dailyFee.multiply(BigDecimal.valueOf(daysLate)), "Late return");
+        Fine fine =  new Fine(DomainId.generate(),userId, loanId,
+                dailyFee.multiply(BigDecimal.valueOf(daysLate)),
+                "Late return");
+
+        fine.registerEvent(new FineCreatedEvent(
+                fine.id().value(), fine.userId(), fine.loanId(), fine.amount(), fine.createdAt()
+        ));
+        return fine;
     }
 
-    public static Fine forDamage(BigDecimal bookPrice) {
-        return new Fine(bookPrice, "Damaged book");
+    public static Fine forDamage(UUID userId, UUID loanId,BigDecimal bookPrice) {
+        return new Fine(DomainId.generate(), userId, loanId, bookPrice, "Damaged book");
+    }
+
+    public void markAsPaid() {
+        if(this.isPaid) throw new IllegalStateException("Fine is already paid.");
+
+        this.isPaid = true;
+        this.paymentDate = OffsetDateTime.now();
+
+        this.registerEvent(new FinePaidEvent(
+                this.id().value(), this.userId(), this.amount(), this.paymentDate
+        ));
     }
 
     private static void validateAmount(BigDecimal amount){
@@ -39,13 +79,33 @@ public final class Fine {
     }
 
     private static void validateReason(String reason){
-        if(reason == null || reason.isEmpty()) throw new IllegalArgumentException("Reason cannot be null or empty");
+        if(reason == null || reason.isBlank()) throw new IllegalArgumentException("Reason cannot be null or empty");
     }
 
-
     // Getters
-    public BigDecimal amount() { return amount; }
-    public String reason() { return reason; }
-    public LocalDate createdAt() { return createdAt; }
+    public DomainId<Fine> id() {
+        return id;
+    }
+    public UUID userId() {
+        return userId;
+    }
+    public UUID loanId() {
+        return loanId;
+    }
+    public BigDecimal amount() {
+        return amount;
+    }
+    public String reason() {
+        return reason;
+    }
+    public OffsetDateTime createdAt() {
+        return createdAt;
+    }
+    public boolean isPaid() {
+        return isPaid;
+    }
+    public OffsetDateTime paymentDate() {
+        return paymentDate;
+    }
 }
 

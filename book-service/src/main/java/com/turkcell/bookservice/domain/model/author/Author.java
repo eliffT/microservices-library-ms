@@ -1,8 +1,9 @@
 package com.turkcell.bookservice.domain.model.author;
 
+import com.turkcell.bookservice.domain.model.BaseAggregateRoot;
 import com.turkcell.bookservice.domain.model.DomainId;
 
-public class Author {
+public class Author extends BaseAggregateRoot {
     private final DomainId<Author> id;
     private String fullName;
 

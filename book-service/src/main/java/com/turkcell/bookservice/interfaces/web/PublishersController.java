@@ -1,9 +1,9 @@
 package com.turkcell.bookservice.interfaces.web;
 
-import com.turkcell.bookservice.application.publisher.command.CreatePublisherCommand;
-import com.turkcell.bookservice.application.publisher.dto.CreatedPublisherResponse;
-import com.turkcell.bookservice.application.publisher.dto.PublisherResponse;
-import com.turkcell.bookservice.application.publisher.query.ListPublishersQuery;
+import com.turkcell.bookservice.application.commands.CreatePublisherCommand;
+import com.turkcell.bookservice.application.dto.CreatedPublisherResponse;
+import com.turkcell.bookservice.application.dto.PublisherResponse;
+import com.turkcell.bookservice.application.query.ListPublishersQuery;
 import com.turkcell.bookservice.core.cqrs.CommandHandler;
 import com.turkcell.bookservice.core.cqrs.QueryHandler;
 import jakarta.validation.Valid;

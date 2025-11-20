@@ -14,3 +14,47 @@ spring:
     hibernate:
       ddl-auto: update
     show-sql: true
+
+  kafka:
+    bootstrap-servers: localhost:9092
+
+    # Üretici (Producer) Ayarları (Book Stock Changed Event yayınlamak için)
+    producer:
+      key-serializer: org.apache.kafka.common.serialization.StringSerializer
+      value-serializer: org.apache.kafka.common.serialization.StringSerializer
+      acks: 1
+      # Ağ hatası olursa 3 kez tekrar dene
+      retries: 3
+
+    # Tüketici (Consumer) Ayarları (Borrow Service olaylarını dinler)
+    consumer:
+      group-id: book-service-group
+      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      value-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      auto-offset-reset: earliest
+      enable-auto-commit: false
+
+      properties:
+        # 2. Tip bilgisinin başlıkta olduğunu belirt (Header Deserialization)
+        spring.json.use.type.headers: true
+
+        # 3. Tip bilgisinin bulunduğu başlık adı (Varsayılan __TypeId__, ancak açıkça belirtmek güvenlidir)
+        spring.json.type.header: __TypeId__
+
+        # 4. Güvenilir paket listesi
+        spring.json.trusted.packages: "com.turkcell.common.events, com.turkcell.*" # Genellikle joker karakter kullanılır
+
+# Eğer Book Service de event yayınlayacaksa bu ayar gereklidir.
+scheduling:
+  enabled: true
+
+# ÖZEL KAFKA TOPIC İSİMLERİ (book-service'in dinlediği topic'ler)
+# Consumer'ların dinleyeceği topic'ler burada açıkça tanımlanmalıdır.
+kafka:
+  topics:
+    # Borrow Service'ten gelen, stok düşürme/artırma işlemlerini tetikleyen topicler
+    loan-events: loan-events
+    reservation-events: reservation-events
+
+    # Book Service'in yayınladığı ve Borrow Service'in dinlediği topicler
+    inventory-events: inventory-events

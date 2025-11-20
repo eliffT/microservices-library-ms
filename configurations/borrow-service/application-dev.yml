@@ -2,3 +2,54 @@ eureka:
   client:
     service-url:
       defaultZone: http://localhost:8761/eureka/
+
+
+spring:
+  datasource:
+    url: jdbc:postgresql://localhost:5434/borrow_service
+    driver-class-name: org.postgresql.Driver
+    username: postgres
+    password: borrow_service_db_password
+
+  jpa:
+    database-platform: org.hibernate.dialect.PostgreSQLDialect
+    hibernate:
+      ddl-auto: update
+    show-sql: true
+
+  kafka:
+    bootstrap-servers: localhost:9092
+
+    # Üretici (Producer) Ayarları (Outbox Relayer Job'ın Kafka'ya göndermesi için)
+    producer:
+      key-serializer: org.apache.kafka.common.serialization.StringSerializer
+      value-serializer: org.apache.kafka.common.serialization.StringSerializer
+      acks: 1
+      # Ağ hatası olursa 3 kez tekrar dene
+      retries: 3
+
+    # Tüketici (Consumer) Ayarları (Borrow Service'in dinlediği event'ler için)
+    consumer:
+      group-id: borrow-service-group
+      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      value-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      auto-offset-reset: earliest
+      enable-auto-commit: false
+
+      properties:
+        # Header Deserialization ayarları (Book Service'in yayımladığı event'i okumak için)
+        spring.json.use.type.headers: true
+        spring.json.type.header: __TypeId__
+        spring.json.trusted.packages: "com.turkcell.common.events, com.turkcell.*" # Güvenilir paket listesi
+
+# ÖZEL KAFKA TOPIC İSİMLERİ (Borrow Service'in dinlediği/yayınladığı topic'ler)
+# Not: Outbox Relayer Job, KafkaTopicMapper'ı kullanarak topic'leri dinamik olarak bulur.
+# Ancak Consumer'ların dinleyeceği topic'ler burada açıkça tanımlanmalıdır.
+kafka:
+  topics:
+    # Book Service'ten gelen, lokal Read Model'i güncelleyen topic
+    inventory: inventory-events
+
+    # User Service'ten gelecekte gelecek olan, kullanıcı durumunu güncelleyen topic
+    user-status: user-status-events
+

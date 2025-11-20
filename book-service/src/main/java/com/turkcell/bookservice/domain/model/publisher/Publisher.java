@@ -1,8 +1,9 @@
 package com.turkcell.bookservice.domain.model.publisher;
 
+import com.turkcell.bookservice.domain.model.BaseAggregateRoot;
 import com.turkcell.bookservice.domain.model.DomainId;
 
-public class Publisher {
+public class Publisher extends BaseAggregateRoot {
 
     private final DomainId<Publisher> id;
     private String name;
@@ -37,11 +38,12 @@ public class Publisher {
         this.name = name;
     }
 
-    public DomainId<Publisher> getId() {
+
+    public DomainId<Publisher> id() {
         return id;
     }
 
-    public String getName() {
+    public String name() {
         return name;
     }
 }
