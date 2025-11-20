@@ -23,7 +23,7 @@ spring:
     # Üretici (Producer) Ayarları (Outbox Relayer Job'ın Kafka'ya göndermesi için)
     producer:
       key-serializer: org.apache.kafka.common.serialization.StringSerializer
-      value-serializer: org.apache.kafka.common.serialization.StringSerializer
+      value-serializer: org.springframework.kafka.support.serializer.JsonSerializer
       acks: 1
       # Ağ hatası olursa 3 kez tekrar dene
       retries: 3
