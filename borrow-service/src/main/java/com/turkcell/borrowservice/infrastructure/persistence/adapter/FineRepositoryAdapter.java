@@ -6,12 +6,14 @@ import com.turkcell.borrowservice.domain.repository.FineRepository;
 import com.turkcell.borrowservice.infrastructure.persistence.entity.FineEntity;
 import com.turkcell.borrowservice.infrastructure.persistence.jparepository.FineJpaRepository;
 import com.turkcell.borrowservice.infrastructure.mapper.FineEntityMapper;
+import org.springframework.stereotype.Repository;
 
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
+@Repository
 public class FineRepositoryAdapter implements FineRepository {
 
     private final FineJpaRepository jpaRepository;

@@ -15,10 +15,10 @@ public class ReservationEntity {
     @Column(columnDefinition = "uuid")
     private UUID id;
 
-    @Column(columnDefinition = "user_uuid")
+    @Column(name = "user_uuid", columnDefinition = "uuid")
     private UUID userId;
 
-    @Column(columnDefinition = "book_uuid")
+    @Column(name = "book_uuid",columnDefinition = "uuid")
     private UUID bookId;
 
     @Column(name = "reservation_date", nullable = false)

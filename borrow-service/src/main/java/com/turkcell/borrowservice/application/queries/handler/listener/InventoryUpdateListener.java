@@ -5,6 +5,7 @@ import com.turkcell.borrowservice.application.ports.BookReadModelRepository;
 import com.turkcell.borrowservice.application.ports.output.BookReadModel;
 import com.turkcell.borrowservice.infrastructure.messaging.inbox.InboxMessage;
 import com.turkcell.borrowservice.infrastructure.messaging.inbox.InboxRepository;
+import com.turkcell.common.events.BookCreatedEvent;
 import com.turkcell.common.events.BookStockChangedEvent;
 import jakarta.transaction.Transactional;
 import org.springframework.dao.DataIntegrityViolationException;
@@ -71,6 +72,35 @@ public class InventoryUpdateListener {
             System.err.println("WARN: BookStockChangedEvent zaten işlenmiş, Read Model güncellemesi atlandı. ID: " + event.getEventId());
         } catch (Exception e) {
             throw new RuntimeException("Read Model güncellemesinde hata.", e);
+        }
+    }
+
+    @Transactional
+    public void handle(BookCreatedEvent event) {
+        try {
+            // INBOX KONTROLÜ VE KAYDI (Idempotency)
+            InboxMessage inboxMessage = new InboxMessage(
+                    event.getEventId(), // Event ID
+                    event.getAggregateId(),
+                    event.getAggregateType().toString()
+            );
+            inboxRepository.saveAndFlush(inboxMessage);
+
+            // İŞ MANTIĞI: YENİ READ MODEL OLUŞTURMA
+            BookReadModel newModel = new BookReadModel(
+                    event.bookId(),
+                    event.initialStockCount() > 0, // isAvailable
+                    event.initialStockCount(),
+                    event.title()
+            );
+            bookReadModelRepository.save(newModel);
+
+            System.out.println("INFO: BookCreatedEvent alındı. Read Model'e eklendi: " + event.bookId());
+
+        } catch (DataIntegrityViolationException e) {
+            System.err.println("WARN: BookCreatedEvent zaten işlenmiş, Read Model oluşturma atlandı. ID: " + event.getEventId());
+        } catch (Exception e) {
+            throw new RuntimeException("Yeni Read Model oluşturulmasında hata.", e);
         }
     }
 }

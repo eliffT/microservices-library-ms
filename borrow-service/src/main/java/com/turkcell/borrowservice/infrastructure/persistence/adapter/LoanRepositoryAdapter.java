@@ -7,12 +7,14 @@ import com.turkcell.borrowservice.domain.repository.LoanRepository;
 import com.turkcell.borrowservice.infrastructure.persistence.entity.LoanEntity;
 import com.turkcell.borrowservice.infrastructure.persistence.jparepository.LoanJpaRepository;
 import com.turkcell.borrowservice.infrastructure.mapper.LoanEntityMapper;
+import org.springframework.stereotype.Repository;
 
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
+@Repository
 public class LoanRepositoryAdapter implements LoanRepository {
 
     private final LoanJpaRepository jpaRepository;

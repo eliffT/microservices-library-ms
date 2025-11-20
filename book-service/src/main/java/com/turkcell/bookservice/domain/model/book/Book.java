@@ -44,6 +44,7 @@ public class Book extends BaseAggregateRoot {
         this.price = price;
     }
 
+
     public static Book create(String title, Integer year, String language, Integer totalCopies, DomainId<Author> authorId,
                               DomainId<Publisher> publisherId, DomainId<Category> categoryId, BigDecimal price) {
         validateTitle(title);

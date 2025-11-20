@@ -14,10 +14,10 @@ public class FineEntity {
     @Column(columnDefinition = "uuid")
     private UUID id;
 
-    @Column(columnDefinition = "user_uuid")
+    @Column(name= "user_uuid", columnDefinition = "uuid")
     private UUID userId;
 
-    @Column(columnDefinition = "loan_uuid")
+    @Column(name = "loan_uuid", columnDefinition = "uuid")
     private UUID loanId;
 
     @Column(name = "amount", nullable = false, precision = 18, scale = 2)

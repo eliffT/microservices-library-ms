@@ -7,6 +7,7 @@ import com.turkcell.borrowservice.domain.repository.ReservationRepository;
 import com.turkcell.borrowservice.infrastructure.persistence.entity.ReservationEntity;
 import com.turkcell.borrowservice.infrastructure.persistence.jparepository.ReservationJpaRepository;
 import com.turkcell.borrowservice.infrastructure.mapper.ReservationEntityMapper;
+import org.springframework.stereotype.Repository;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -14,6 +15,7 @@ import java.util.Optional;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
+@Repository
 public class ReservationRepositoryAdapter implements ReservationRepository {
 
     private final ReservationJpaRepository jpaRepository;

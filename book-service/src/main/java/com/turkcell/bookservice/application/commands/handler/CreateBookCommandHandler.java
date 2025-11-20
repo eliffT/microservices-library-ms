@@ -33,10 +33,12 @@ public class CreateBookCommandHandler implements CommandHandler<CreateBookComman
     @Override
     public CreatedBookResponse handle(CreateBookCommand command) {
         Book book = mapper.toDomain(command);
-        book = bookRepository.save(book);
 
         List<DomainEvent> domainEvents = book.getDomainEvents();
+        book = bookRepository.save(book);
+
         eventPublisher.publish(domainEvents);
+        book.clearDomainEvents();
         return mapper.toResponse(book);
     }
 }

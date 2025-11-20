@@ -3,6 +3,7 @@ package com.turkcell.borrowservice.infrastructure.messaging.kafka.consumer;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.turkcell.borrowservice.application.queries.handler.listener.InventoryUpdateListener;
+import com.turkcell.common.events.BookCreatedEvent;
 import com.turkcell.common.events.BookStockChangedEvent;
 import com.turkcell.common.events.DomainEvent;
 import org.springframework.kafka.annotation.KafkaListener;
@@ -23,6 +24,7 @@ public class BookStatusKafkaConsumer {
         this.inventoryUpdateListener = inventoryUpdateListener;
     }
 
+    // 1. Stok Değişikliği Olayı
     @KafkaListener(topics = "${kafka.topics.inventory}", // application.properties'den okunacak topic
             groupId = "${spring.kafka.consumer.group-id}")
     // @Payload kullanarak doğrudan BookStockChangedEvent nesnesini alınır
@@ -42,6 +44,13 @@ public class BookStatusKafkaConsumer {
             // RuntimeException fırlatılması, Kafka'da retry mekanizmasını tetikler.
             throw new RuntimeException("Book Stock Changed Event işlenirken hata oluştu.", e);
         }
+    }
+
+    // 2. Yeni Kitap Oluşturma Olayı
+    @KafkaListener(topics = "${kafka.topics.inventory}", groupId = "${spring.kafka.consumer.group-id}")
+    public void consumeBookCreated(@Payload BookCreatedEvent event) {
+        // Yönlendirme
+        inventoryUpdateListener.handle(event);
     }
 
 }
