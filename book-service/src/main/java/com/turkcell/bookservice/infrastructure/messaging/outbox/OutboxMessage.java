@@ -23,6 +23,8 @@ public class OutboxMessage {
     private UUID aggregateId;
 
     private String eventType; // LoanCreatedEvent
+    @Lob // Büyük nesne (Large Object) olduğunu belirtir
+    @Column(name = "payload_json", columnDefinition = "TEXT")
     private String payloadJson;
     @Column(nullable = false)
     @Enumerated(EnumType.STRING)

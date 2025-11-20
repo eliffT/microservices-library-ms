@@ -5,10 +5,12 @@ import com.turkcell.borrowservice.application.ports.output.BookReadModel;
 import com.turkcell.borrowservice.infrastructure.mapper.BookModelEntityMapper;
 import com.turkcell.borrowservice.infrastructure.persistence.entity.BookReadModelEntity;
 import com.turkcell.borrowservice.infrastructure.persistence.jparepository.BookReadModelJpaRepository;
+import org.springframework.stereotype.Repository;
 
 import java.util.Optional;
 import java.util.UUID;
 
+@Repository
 public class BookReadModelRepositoryAdapter implements BookReadModelRepository {
     private final BookReadModelJpaRepository jpaRepository;
     private final BookModelEntityMapper mapper;

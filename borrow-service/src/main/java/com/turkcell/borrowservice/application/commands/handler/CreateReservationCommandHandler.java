@@ -10,9 +10,11 @@ import com.turkcell.borrowservice.domain.repository.FineRepository;
 import com.turkcell.borrowservice.domain.repository.ReservationRepository;
 import com.turkcell.borrowservice.infrastructure.messaging.relayer.OutboxEventPersister;
 import jakarta.transaction.Transactional;
+import org.springframework.stereotype.Component;
 
 import java.util.UUID;
 
+@Component
 public class CreateReservationCommandHandler {
     private final ReservationRepository reservationRepository;
     private final KafkaEventProducerPort eventPublisher;
