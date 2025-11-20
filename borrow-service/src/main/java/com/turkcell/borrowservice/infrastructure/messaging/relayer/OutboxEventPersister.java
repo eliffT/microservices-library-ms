@@ -35,7 +35,7 @@ public class OutboxEventPersister {
             OutboxMessage message = new OutboxMessage();
             message.setEventId(event.getEventId());
             message.setAggregateId(event.getAggregateId());
-            message.setAggregateType(event.aggregateType().toString());
+            message.setAggregateType(event.getAggregateType().toString());
             message.setEventType(event.getClass().getSimpleName());
 
             // Domain Event'i JSON string'e serileştirme

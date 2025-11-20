@@ -32,7 +32,7 @@ public record ReservationFulfilledEvent(
     }
 
     @Override
-    public AggregateType aggregateType() {
+    public AggregateType getAggregateType() {
         return AggregateType.RESERVATION;
     }
 

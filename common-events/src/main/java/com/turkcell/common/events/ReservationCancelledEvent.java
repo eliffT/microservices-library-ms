@@ -31,7 +31,7 @@ public record ReservationCancelledEvent (
     }
 
     @Override
-    public AggregateType aggregateType() {
+    public AggregateType getAggregateType() {
         return AggregateType.RESERVATION;
     }
 }

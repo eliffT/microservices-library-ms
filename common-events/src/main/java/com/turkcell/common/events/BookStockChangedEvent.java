@@ -32,7 +32,7 @@ public record BookStockChangedEvent (
     }
 
     @Override
-    public AggregateType aggregateType() {
+    public AggregateType getAggregateType() {
         return AggregateType.BOOK;
     }
 }

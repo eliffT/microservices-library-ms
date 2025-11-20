@@ -35,7 +35,7 @@ public record BookCreatedEvent(
     }
 
     @Override
-    public AggregateType aggregateType() {
+    public AggregateType getAggregateType() {
         return AggregateType.BOOK;
     }
 }

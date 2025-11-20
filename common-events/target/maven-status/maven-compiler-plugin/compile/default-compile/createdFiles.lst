@@ -1,3 +1,4 @@
+com\turkcell\common\events\AggregateType.class
 com\turkcell\common\events\BookStockChangedEvent.class
 com\turkcell\common\events\LoanCreatedEvent.class
 com\turkcell\common\events\ReservationCancelledEvent.class
