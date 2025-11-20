@@ -33,7 +33,7 @@ spring:
       group-id: borrow-service-group
       key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
       value-deserializer: org.springframework.kafka.support.serializer.JsonDeserializer
-      auto-offset-reset: earliest
+      auto-offset-reset: latest
       enable-auto-commit: false
 
       properties:
