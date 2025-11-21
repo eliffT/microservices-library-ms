@@ -21,7 +21,8 @@ public class UserFine {
     @Column(name = "is_paid", nullable = false)
     private boolean isPaid; // Ödenip ödenmediği
 
-
+    public UserFine() {
+    }
     /**
      * Sadece FineCreatedEvent objesini alarak UserFine Entity'sini oluşturan constructor.
      * Bu constructor, event'ten gelen verileri doğrudan entity alanlarına eşler.

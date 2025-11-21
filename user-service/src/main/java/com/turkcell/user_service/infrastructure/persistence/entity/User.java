@@ -35,27 +35,11 @@ public class User {
 
     public User(){}
 
-    public String firstName() {
-        return firstName;
-    }
-
-    public void setFirstName(String firstName) {
-        this.firstName = firstName;
-    }
-
-    public String lastName() {
-        return lastName;
-    }
-
-    public void setLastName(String lastName) {
-        this.lastName = lastName;
-    }
-
     public User(UUID id) {
         this.id = id;
     }
 
-    public UUID id() {
+    public UUID getId() {
         return id;
     }
 
@@ -63,8 +47,23 @@ public class User {
         this.id = id;
     }
 
+    public String getFirstName() {
+        return firstName;
+    }
 
-    public String email() {
+    public void setFirstName(String firstName) {
+        this.firstName = firstName;
+    }
+
+    public String getLastName() {
+        return lastName;
+    }
+
+    public void setLastName(String lastName) {
+        this.lastName = lastName;
+    }
+
+    public String getEmail() {
         return email;
     }
 
@@ -72,7 +71,7 @@ public class User {
         this.email = email;
     }
 
-    public String phone() {
+    public String getPhone() {
         return phone;
     }
 
@@ -80,7 +79,7 @@ public class User {
         this.phone = phone;
     }
 
-    public LocalDate createdAt() {
+    public LocalDate getCreatedAt() {
         return createdAt;
     }
 
@@ -88,15 +87,11 @@ public class User {
         this.createdAt = createdAt;
     }
 
-    public MembershipLevel membershipLevel() {
+    public MembershipLevel getMembershipLevel() {
         return membershipLevel;
     }
 
     public void setMembershipLevel(MembershipLevel membershipLevel) {
         this.membershipLevel = membershipLevel;
     }
-
-
-
-
 }
