@@ -58,7 +58,7 @@ public class IncreaseBookStockCommandHandler implements LoanReturnedEventListene
             Book book = bookRepository.findById(DomainId.from(command.bookId()))
                     .orElseThrow(() -> new IllegalArgumentException("İade edilecek kitap bulunamadı."));
 
-            book.restock(1); // Domain mantığı ile stok artışı
+            book.increaseStock(1); // Domain mantığı ile stok artışı
 
             // VERİTABANINA KAYIT
             bookRepository.save(book);
