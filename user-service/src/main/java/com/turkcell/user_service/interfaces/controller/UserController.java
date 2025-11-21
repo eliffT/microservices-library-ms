@@ -1,8 +1,8 @@
-package com.turkcell.user_service.controller;
+package com.turkcell.user_service.interfaces.controller;
 
-import com.turkcell.user_service.dto.UserRequest;
-import com.turkcell.user_service.dto.UserResponse;
-import com.turkcell.user_service.service.UserService;
+import com.turkcell.user_service.application.dto.UserRequest;
+import com.turkcell.user_service.application.dto.UserResponse;
+import com.turkcell.user_service.application.service.UserService;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;

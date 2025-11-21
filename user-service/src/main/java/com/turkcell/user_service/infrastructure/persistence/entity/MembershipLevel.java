@@ -1,4 +1,4 @@
-package com.turkcell.user_service.entity;
+package com.turkcell.user_service.infrastructure.persistence.entity;
 
 public enum MembershipLevel {
     STANDARD(3, 14),

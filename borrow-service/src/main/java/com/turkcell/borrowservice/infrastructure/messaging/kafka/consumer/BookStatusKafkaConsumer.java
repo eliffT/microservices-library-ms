@@ -28,29 +28,31 @@ public class BookStatusKafkaConsumer {
     @KafkaListener(topics = "${kafka.topics.inventory}", // application.properties'den okunacak topic
             groupId = "${spring.kafka.consumer.group-id}")
     // @Payload kullanarak doğrudan BookStockChangedEvent nesnesini alınır
-    public void consumeBookStockChanges(@Payload BookStockChangedEvent event) {
+    public void consumeInventoryEvents(@Payload DomainEvent event) {
         try {
-            // 1. Olay, @Payload sayesinde otomatik olarak dönüştürüldü.
-            // Bu, aynı zamanda INBOX desenini uygulamadan önce tek bir olay tipi olduğu için kabul edilebilir.
+            // Spring Kafka, __TypeId__ başlığı sayesinde event'i doğru tipe dönüştürdü.
+            // Şimdi tip kontrolü yaparak yönlendirme yapmalıyız.
 
-            // 2. Application Katmanındaki Listener'ı çağır
-            inventoryUpdateListener.handle(event);
+            if (event instanceof BookStockChangedEvent bookStockChangedEvent) {
 
-            System.out.printf("INFO: Successfully processed BookStockChangedEvent for book ID: %s%n", event.aggregateId());
+                inventoryUpdateListener.handle(bookStockChangedEvent);
+                System.out.printf("INFO: Successfully processed BookStockChangedEvent for book ID: %s%n", bookStockChangedEvent.aggregateId());
+
+            } else if (event instanceof BookCreatedEvent bookCreatedEvent) {
+
+                inventoryUpdateListener.handle(bookCreatedEvent);
+                System.out.printf("INFO: Successfully processed BookCreatedEvent for book ID: %s%n", bookCreatedEvent.getAggregateId());
+
+            } else {
+                // Topic'te beklemediğimiz bir event tipi geldi.
+                System.err.println("WARN: Bilinmeyen Inventory Event tipi atlanıyor: " + event.getClass().getSimpleName());
+            }
 
         } catch (Exception e) {
-            // Listener'daki (iş mantığındaki) beklenmeyen hatalar
             System.err.println("CRITICAL ERROR: Failed to process event in InventoryUpdateListener: " + e.getMessage());
             // RuntimeException fırlatılması, Kafka'da retry mekanizmasını tetikler.
-            throw new RuntimeException("Book Stock Changed Event işlenirken hata oluştu.", e);
+            throw new RuntimeException("Inventory Event işlenirken hata oluştu.", e);
         }
-    }
-
-    // 2. Yeni Kitap Oluşturma Olayı
-    @KafkaListener(topics = "${kafka.topics.inventory}", groupId = "${spring.kafka.consumer.group-id}")
-    public void consumeBookCreated(@Payload BookCreatedEvent event) {
-        // Yönlendirme
-        inventoryUpdateListener.handle(event);
     }
 
 }

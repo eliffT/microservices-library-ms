@@ -22,6 +22,8 @@ public class OutboxMessage {
     private UUID aggregateId;
 
     private String eventType; // LoanCreatedEvent
+    @Lob // PostgreSQL'de bu, genellikle TEXT veya CLOB'a eşlenir.
+    @Column(name = "payload_json", columnDefinition = "TEXT")
     private String payloadJson;
     @Column(nullable = false)
     @Enumerated(EnumType.STRING)
