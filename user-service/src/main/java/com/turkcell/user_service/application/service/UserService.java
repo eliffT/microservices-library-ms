@@ -84,7 +84,7 @@ public class UserService {
 
     public UserResponse changeUserStatus(UUID id, String value) {
         User user =  userRepository.findById(id).orElseThrow(()-> new RuntimeException("User not found with id: " + id));
-        if(!user.membershipLevel().equals(MembershipLevel.valueOf(value))){
+        if(!user.getMembershipLevel().equals(MembershipLevel.valueOf(value))){
             user.setMembershipLevel(MembershipLevel.valueOf(value));
             userRepository.save(user);
         }

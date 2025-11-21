@@ -51,7 +51,7 @@ public final class Fine extends BaseAggregateRoot {
                 "Late return");
 
         fine.registerEvent(new FineCreatedEvent(
-                fine.id().value(), fine.userId(), fine.loanId(), fine.amount(), fine.isPaid(), fine.createdAt()
+                fine.id().value(), fine.userId(), fine.loanId(), fine.amount()
         ));
         return fine;
     }
