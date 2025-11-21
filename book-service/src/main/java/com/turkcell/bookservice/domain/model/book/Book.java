@@ -74,19 +74,35 @@ public class Book extends BaseAggregateRoot {
         return b;
     }
 
-    public void restock(Integer quantityToRestock) {
-        if (quantityToRestock == null || quantityToRestock <= 0)
+    public void increaseStock(Integer quantity) {
+        if (quantity == null || quantity <= 0)
             throw new IllegalArgumentException("Quantity to restock must be greater than 0");
 
-        checkAmount(quantityToRestock);
-        this.totalCopies += quantityToRestock;
-        this.availableCopies += quantityToRestock;
+        this.totalCopies += quantity;
+        this.availableCopies += quantity;
         ensureStockConsistency();
 
         this.registerEvent(new BookStockChangedEvent(
                 this.id().value(),
                 this.availableCopies,
-                "InventoryRestock"
+                "StockIncreased"
+        ));
+    }
+
+    public void decreaseStock(Integer quantity) {
+        if (quantity == null || quantity <= 0)
+            throw new IllegalArgumentException("Quantity must be > 0");
+        if (this.availableCopies < quantity)
+            throw new IllegalArgumentException("Not enough copies");
+
+        this.availableCopies -= quantity;
+        this.totalCopies -= quantity;
+        ensureStockConsistency();
+
+        this.registerEvent(new BookStockChangedEvent(
+                this.id().value(),
+                this.availableCopies,
+                "StockDecreased"
         ));
     }
 

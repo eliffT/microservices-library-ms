@@ -23,6 +23,9 @@ public class OutboxMessageRelayerJob {
     private final ObjectMapper objectMapper;
     private final KafkaTopicMapper topicMapper;
 
+    // Varsayım: Tüm eventler 'com.turkcell.common.events.' paketi altında.
+    private static final String EVENT_PACKAGE_PREFIX = "com.turkcell.common.events.";
+
     public OutboxMessageRelayerJob(OutboxRepository outboxRepository,
                                    KafkaProducerService kafkaProducerService,
                                    ObjectMapper objectMapper, KafkaTopicMapper topicMapper) {
@@ -50,8 +53,14 @@ public class OutboxMessageRelayerJob {
                 // Key olarak Aggregate ID'yi kullan (Kafka'da sıralı işleme garantisi için)
                 String key = message.getAggregateId().toString();
 
+                // JSON String'ini Doğru DomainEvent Objesine Dönüştür
+                String fullClassName = EVENT_PACKAGE_PREFIX + message.getEventType();
+                Class<?> eventClass = Class.forName(fullClassName);
 
-                kafkaProducerService.sendMessage(topicName, key, message.getPayloadJson());
+                // ObjectMapper kullanarak JSON String'i DomainEvent'e dönüştür
+                Object domainEvent = objectMapper.readValue(message.getPayloadJson(), eventClass);
+
+                kafkaProducerService.sendMessage(topicName, key, domainEvent);
 
                 message.setStatus(OutboxStatus.PROCESSED);
                 message.setProcessedAt(OffsetDateTime.now());

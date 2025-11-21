@@ -1,5 +1,6 @@
 package com.turkcell.borrowservice.infrastructure.messaging.relayer;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.turkcell.borrowservice.infrastructure.messaging.kafka.KafkaProducerService;
 import com.turkcell.borrowservice.infrastructure.messaging.kafka.KafkaTopicMapper;
 import com.turkcell.borrowservice.infrastructure.messaging.outbox.OutboxMessage;
@@ -21,13 +22,18 @@ public class OutboxMessageRelayerJob {     // DB'den Read, Kafka'ya iletim ve du
     private final OutboxRepository outboxRepository;
     private final KafkaProducerService kafkaProducerService;
     private final KafkaTopicMapper topicMapper;
+    private final ObjectMapper objectMapper;
+
+    // Varsayım: Tüm eventler 'com.turkcell.common.events.' paketi altında.
+    private static final String EVENT_PACKAGE_PREFIX = "com.turkcell.common.events.";
 
     public OutboxMessageRelayerJob(OutboxRepository outboxRepository,
                                    KafkaProducerService kafkaProducerService,
-                                   KafkaTopicMapper topicMapper) {
+                                   KafkaTopicMapper topicMapper, ObjectMapper objectMapper) {
         this.outboxRepository = outboxRepository;
         this.kafkaProducerService = kafkaProducerService;
         this.topicMapper = topicMapper;
+        this.objectMapper = objectMapper;
     }
 
 
@@ -48,7 +54,16 @@ public class OutboxMessageRelayerJob {     // DB'den Read, Kafka'ya iletim ve du
                 // Key olarak Aggregate ID'yi kullan (Kafka'da sıralı işleme garantisi için)
                 String key = message.getAggregateId().toString();
 
-                kafkaProducerService.sendMessage(topicName, key, message.getPayloadJson());
+                // JSON String'ini Doğru DomainEvent Objesine Dönüştür
+                String fullClassName = EVENT_PACKAGE_PREFIX + message.getEventType();
+                Class<?> eventClass = Class.forName(fullClassName);
+
+                // ObjectMapper kullanarak JSON String'i DomainEvent'e dönüştür
+                Object domainEvent = objectMapper.readValue(message.getPayloadJson(), eventClass);
+
+                // 2. Kafka'ya Gönder
+                // Bu çağrı, KafkaProducerService'deki Object payload'lu metodu kullanır.
+                kafkaProducerService.sendMessage(topicName, key, domainEvent);
 
                 message.setStatus(OutboxStatus.PROCESSED);
                 message.setProcessedAt(OffsetDateTime.now());
