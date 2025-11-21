@@ -1,9 +1,9 @@
-package com.turkcell.user_service.service;
+package com.turkcell.user_service.application.mapper;
 
 
-import com.turkcell.user_service.dto.UserRequest;
-import com.turkcell.user_service.dto.UserResponse;
-import com.turkcell.user_service.entity.User;
+import com.turkcell.user_service.application.dto.UserRequest;
+import com.turkcell.user_service.application.dto.UserResponse;
+import com.turkcell.user_service.infrastructure.persistence.entity.User;
 import org.mapstruct.Mapper;
 
 

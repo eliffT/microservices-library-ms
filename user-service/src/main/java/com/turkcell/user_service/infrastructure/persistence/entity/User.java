@@ -1,10 +1,9 @@
-package com.turkcell.user_service.entity;
+package com.turkcell.user_service.infrastructure.persistence.entity;
 
 import jakarta.persistence.*;
 import org.hibernate.annotations.CreationTimestamp;
 
 import java.time.LocalDate;
-import java.util.List;
 import java.util.UUID;
 
 @Entity

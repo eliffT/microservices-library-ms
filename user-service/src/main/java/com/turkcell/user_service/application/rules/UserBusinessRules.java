@@ -1,8 +1,8 @@
-package com.turkcell.user_service.rules;
+package com.turkcell.user_service.application.rules;
 
-import com.turkcell.user_service.entity.MembershipLevel;
-import com.turkcell.user_service.entity.User;
-import com.turkcell.user_service.repository.UserRepository;
+import com.turkcell.user_service.infrastructure.persistence.entity.MembershipLevel;
+import com.turkcell.user_service.infrastructure.persistence.entity.User;
+import com.turkcell.user_service.infrastructure.persistence.repository.UserRepository;
 import jakarta.ws.rs.NotFoundException;
 
 public class UserBusinessRules {

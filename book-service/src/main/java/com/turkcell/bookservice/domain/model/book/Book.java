@@ -78,7 +78,6 @@ public class Book extends BaseAggregateRoot {
         if (quantity == null || quantity <= 0)
             throw new IllegalArgumentException("Quantity to restock must be greater than 0");
 
-        this.totalCopies += quantity;
         this.availableCopies += quantity;
         ensureStockConsistency();
 
@@ -95,7 +94,6 @@ public class Book extends BaseAggregateRoot {
         if (this.availableCopies < quantity)
             throw new IllegalArgumentException("Not enough copies");
 
-        this.availableCopies -= quantity;
         this.totalCopies -= quantity;
         ensureStockConsistency();
 

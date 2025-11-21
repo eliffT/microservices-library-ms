@@ -11,11 +11,13 @@ public record FineCreatedEvent(
         UUID userId,
         UUID loanId,
         BigDecimal amount,
+        Boolean isPaid,
         OffsetDateTime dueDate
 ) implements DomainEvent {
 
-    public FineCreatedEvent(UUID fineId, UUID userId, UUID loanId, BigDecimal amount, OffsetDateTime dueDate) {
-        this(UUID.randomUUID(), OffsetDateTime.now(), fineId, userId, loanId, amount, dueDate);
+    public FineCreatedEvent(UUID fineId, UUID userId, UUID loanId, BigDecimal amount,
+                            Boolean isPaid, OffsetDateTime dueDate) {
+        this(UUID.randomUUID(), OffsetDateTime.now(), fineId, userId, loanId, amount, isPaid, dueDate);
     }
 
     @Override

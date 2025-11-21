@@ -1,33 +1,31 @@
-package com.turkcell.user_service.dto;
+package com.turkcell.user_service.application.dto;
 
 
+import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Pattern;
 
-public class UserResponse {
+public class UserRequest {
 
-    private Integer id;
+    @NotBlank
     private String firstName;
+    @NotBlank
     private String lastName;
+
+    @Email(message = "Invalid email format. Make sure your email contains '@' and a domain")
     private String email;
+
+    @Pattern(regexp = "^[0-9]{11}$", message = "Invalid phone number format")
     private String phone;
 
-
-    public UserResponse() {
+    public UserRequest() {
     }
 
-    public UserResponse(Integer id, String firstName, String lastName, String email, String phone) {
-        this.id = id;
+    public UserRequest(String firstName, String lastName, String email, String phone) {
         this.firstName = firstName;
         this.lastName = lastName;
         this.email = email;
         this.phone = phone;
-    }
-
-    public Integer getId() {
-        return id;
-    }
-
-    public void setId(Integer id) {
-        this.id = id;
     }
 
     public String getFirstName() {
@@ -61,6 +59,5 @@ public class UserResponse {
     public void setPhone(String phone) {
         this.phone = phone;
     }
-
 
 }
