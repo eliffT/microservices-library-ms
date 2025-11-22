@@ -6,7 +6,7 @@ import com.turkcell.borrowservice.application.exceptions.NotFoundException;
 import com.turkcell.borrowservice.domain.model.DomainId;
 import com.turkcell.borrowservice.domain.model.Fine;
 import com.turkcell.borrowservice.domain.repository.FineRepository;
-import com.turkcell.borrowservice.infrastructure.messaging.relayer.OutboxEventPersister;
+import com.turkcell.borrowservice.infrastructure.messaging.outbox.relayer.OutboxEventPersister;
 import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Component;
 

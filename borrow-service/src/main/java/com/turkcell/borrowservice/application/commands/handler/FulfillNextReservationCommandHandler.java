@@ -4,7 +4,6 @@ import com.turkcell.borrowservice.application.ports.output.eventproducer.KafkaEv
 import com.turkcell.borrowservice.domain.model.Reservation;
 import com.turkcell.borrowservice.domain.model.enumstatus.ReservationStatus;
 import com.turkcell.borrowservice.domain.repository.ReservationRepository;
-import com.turkcell.borrowservice.infrastructure.messaging.relayer.OutboxEventPersister;
 import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Component;
 

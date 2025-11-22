@@ -1,4 +1,4 @@
-package com.turkcell.bookservice.infrastructure.messaging.relayer;
+package com.turkcell.bookservice.infrastructure.messaging.outbox.relayer;
 
 
 import com.turkcell.common.events.DomainEvent;
@@ -22,7 +22,6 @@ public class OutboxEventPersister {
         this.objectMapper = objectMapper;
     }
 
-    // Command Handler tarafından aynı Transaction içinde çağrılacak metot
     public void save(List<DomainEvent> domainEvents) {
         List<OutboxMessage> messages = domainEvents.stream()
                 .map(this::toOutboxMessage)

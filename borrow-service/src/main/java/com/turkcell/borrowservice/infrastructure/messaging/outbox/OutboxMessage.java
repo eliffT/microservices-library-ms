@@ -36,7 +36,6 @@ public class OutboxMessage {
     public UUID getId() {
         return id;
     }
-
     public void setId(UUID id) {
         this.id = id;
     }
@@ -44,7 +43,6 @@ public class OutboxMessage {
     public UUID getEventId() {
         return eventId;
     }
-
     public void setEventId(UUID eventId) {
         this.eventId = eventId;
     }
@@ -52,7 +50,6 @@ public class OutboxMessage {
     public String getAggregateType() {
         return aggregateType;
     }
-
     public void setAggregateType(String aggregateType) {
         this.aggregateType = aggregateType;
     }
@@ -60,7 +57,6 @@ public class OutboxMessage {
     public UUID getAggregateId() {
         return aggregateId;
     }
-
     public void setAggregateId(UUID aggregateId) {
         this.aggregateId = aggregateId;
     }
@@ -68,7 +64,6 @@ public class OutboxMessage {
     public String getEventType() {
         return eventType;
     }
-
     public void setEventType(String eventType) {
         this.eventType = eventType;
     }
@@ -76,7 +71,6 @@ public class OutboxMessage {
     public String getPayloadJson() {
         return payloadJson;
     }
-
     public void setPayloadJson(String payloadJson) {
         this.payloadJson = payloadJson;
     }
@@ -84,7 +78,6 @@ public class OutboxMessage {
     public OutboxStatus getStatus() {
         return status;
     }
-
     public void setStatus(OutboxStatus status) {
         this.status = status;
     }
@@ -92,7 +85,6 @@ public class OutboxMessage {
     public int getRetryCount() {
         return retryCount;
     }
-
     public void setRetryCount(int retryCount) {
         this.retryCount = retryCount;
     }
@@ -100,7 +92,6 @@ public class OutboxMessage {
     public OffsetDateTime getCreatedAt() {
         return createdAt;
     }
-
     public void setCreatedAt(OffsetDateTime createdAt) {
         this.createdAt = createdAt;
     }
@@ -108,7 +99,6 @@ public class OutboxMessage {
     public OffsetDateTime getProcessedAt() {
         return processedAt;
     }
-
     public void setProcessedAt(OffsetDateTime processedAt) {
         this.processedAt = processedAt;
     }

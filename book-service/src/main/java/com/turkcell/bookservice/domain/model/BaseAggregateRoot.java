@@ -1,6 +1,6 @@
 package com.turkcell.bookservice.domain.model;
 
-// Lütfen common-events modülündeki event'lerin gerçek paket yolunu kullanın
+
 import com.turkcell.common.events.DomainEvent;
 
 import java.util.ArrayList;
@@ -10,7 +10,7 @@ import java.util.List;
 public abstract class BaseAggregateRoot {
     private final List<DomainEvent> domainEvents = new ArrayList<>();
 
-    // Protected Metot: Alt sınıfların (Loan, Fine, Reservation) olay kaydetmesi için
+    // Protected Metot: Alt sınıfların olay kaydetmesi için
     protected void registerEvent(DomainEvent event) {
         this.domainEvents.add(event);
     }

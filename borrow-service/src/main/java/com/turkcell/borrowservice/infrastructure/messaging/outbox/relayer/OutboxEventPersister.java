@@ -1,4 +1,4 @@
-package com.turkcell.borrowservice.infrastructure.messaging.relayer;
+package com.turkcell.borrowservice.infrastructure.messaging.outbox.relayer;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -21,7 +21,6 @@ public class OutboxEventPersister {
         this.objectMapper = objectMapper;
     }
 
-    // Command Handler tarafından aynı Transaction içinde çağrılacak metot
     public void save(List<DomainEvent> domainEvents) {
         List<OutboxMessage> messages = domainEvents.stream()
                 .map(this::toOutboxMessage)

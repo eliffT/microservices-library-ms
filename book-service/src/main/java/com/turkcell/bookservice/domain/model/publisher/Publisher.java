@@ -42,7 +42,6 @@ public class Publisher extends BaseAggregateRoot {
     public DomainId<Publisher> id() {
         return id;
     }
-
     public String name() {
         return name;
     }

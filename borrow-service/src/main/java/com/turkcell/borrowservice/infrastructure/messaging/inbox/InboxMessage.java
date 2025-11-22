@@ -6,7 +6,6 @@ import java.util.UUID;
 
 @Entity
 @Table(name = "inbox", indexes = {
-        // Performans için aggregateId üzerine indeks
         @Index(name = "ix_inbox_aggregate_id", columnList = "aggregateId")
 })
 public class InboxMessage {
@@ -22,12 +21,11 @@ public class InboxMessage {
     private UUID aggregateId; // Etkilenen Aggregate Root'un ID'si (örn. Book ID)
 
     @Enumerated(EnumType.STRING)
-    private InboxStatus status = InboxStatus.PROCESSED; // İşlem başladığında PROCESSED olarak varsayılır
+    private InboxStatus status = InboxStatus.PROCESSED;
 
     private OffsetDateTime createdAt = OffsetDateTime.now();
     private OffsetDateTime processedAt = OffsetDateTime.now();
 
-    // Constructor (Örn: IncreaseBookStockCommandHandler'da kullanım için)
     public InboxMessage() {}
 
     public InboxMessage(UUID eventId, UUID aggregateId, String aggregateType) {
@@ -37,7 +35,6 @@ public class InboxMessage {
     }
 
     // Getters and Setters
-
     public UUID getEventId() { return eventId; }
     public void setEventId(UUID eventId) { this.eventId = eventId; }
 

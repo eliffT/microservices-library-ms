@@ -11,5 +11,5 @@ public interface CategoryRepository {
     Optional<Category> findById(DomainId<Category> categoryId);
     List<Category> findAll();
     List<Category> findAllPaged(Integer pageIndex, Integer pageSize);
-    void deleteById(DomainId<Category> categoryId);
+    void delete(DomainId<Category> categoryId);
 }

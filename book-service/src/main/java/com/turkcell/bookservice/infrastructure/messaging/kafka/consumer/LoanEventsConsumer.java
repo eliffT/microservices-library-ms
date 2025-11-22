@@ -1,6 +1,5 @@
 package com.turkcell.bookservice.infrastructure.messaging.kafka.consumer;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.turkcell.bookservice.application.ports.input.eventlistener.LoanCreatedEventListener;
 import com.turkcell.bookservice.application.ports.input.eventlistener.LoanReturnedEventListener;
 import com.turkcell.common.events.DomainEvent;
@@ -10,16 +9,17 @@ import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.messaging.handler.annotation.Payload;
 import org.springframework.stereotype.Component;
 
+
+//Gelen LoanCreatedEvent ve LoanReturnedEvent olaylarını dinler ve
+//ilgili Application Service'e (LoanCreatedEventListener, LoanReturnedEventListener) yönlendirir.
+
 @Component
 public class LoanEventsConsumer {
-    private final ObjectMapper objectMapper;
     private final LoanCreatedEventListener createdListener;
     private final LoanReturnedEventListener returnedListener;
 
-    public LoanEventsConsumer(ObjectMapper objectMapper,
-                              LoanCreatedEventListener createdListener,
+    public LoanEventsConsumer(LoanCreatedEventListener createdListener,
                               LoanReturnedEventListener returnedListener) {
-        this.objectMapper = objectMapper;
         this.createdListener = createdListener;
         this.returnedListener = returnedListener;
     }
@@ -30,7 +30,7 @@ public class LoanEventsConsumer {
     // Gelen mesajı JSON'dan String yerine, otomatik olarak DomainEvent'e eşleştir.
     public void consumeLoanCreated(@Payload DomainEvent event) {
         // @Payload'ın temel işlevi, gelen bayt veya String mesaj içeriğini (payload),
-        // hedef metot parametresinin (bu örnekte DomainEvent event) Java tipine otomatik olarak dönüştürmektir.
+        // hedef metot parametresinin Java tipine otomatik olarak dönüştürmektir.
         try {
             // Spring Kafka'nın Header Deserialization özelliği, event'i doğru tipe
             // (LoanCreatedEvent veya LoanReturnedEvent) zaten dönüştürmüş olmalı.

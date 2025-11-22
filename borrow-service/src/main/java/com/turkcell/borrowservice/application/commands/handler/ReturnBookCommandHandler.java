@@ -8,7 +8,6 @@ import com.turkcell.borrowservice.domain.model.Fine;
 import com.turkcell.borrowservice.domain.model.Loan;
 import com.turkcell.borrowservice.domain.repository.FineRepository;
 import com.turkcell.borrowservice.domain.repository.LoanRepository;
-import com.turkcell.borrowservice.infrastructure.messaging.relayer.OutboxEventPersister;
 import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Component;
 
