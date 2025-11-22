@@ -7,7 +7,6 @@ import com.turkcell.bookservice.application.ports.output.eventproducer.EventPubl
 import com.turkcell.bookservice.core.cqrs.CommandHandler;
 import com.turkcell.bookservice.domain.model.book.Book;
 import com.turkcell.bookservice.domain.repository.BookRepository;
-import com.turkcell.bookservice.infrastructure.messaging.relayer.OutboxEventPersister;
 import com.turkcell.common.events.DomainEvent;
 import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Component;

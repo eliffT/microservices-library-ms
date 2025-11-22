@@ -48,7 +48,7 @@ public class CategoryRepositoryAdapter implements CategoryRepository {
     }
 
     @Override
-    public void deleteById(DomainId<Category> categoryId) {
+    public void delete(DomainId<Category> categoryId) {
         repository.deleteById(categoryId.value());
     }
 }

@@ -52,7 +52,7 @@ public class DecreaseBookStockCommandHandler implements LoanCreatedEventListener
             Book book = bookRepository.findById(DomainId.from(command.bookId()))
                     .orElseThrow(() -> new IllegalArgumentException("Kitap bulunamadı."));
 
-            book.decreaseStock(1); // Domain mantığı ile stok düşüşü
+            book.decreaseStock(1);
 
             // VERİTABANINA KAYIT
             bookRepository.save(book);

@@ -33,7 +33,6 @@ public class IncreaseBookStockCommandHandler implements LoanReturnedEventListene
 
     @Override
     public void handle(LoanReturnedEvent event) {
-        // Event'i Command'a dönüştürülür (Command'ın eventId'yi taşıdığını varsayıyoruz)
         BookStockCommand command = new BookStockCommand(
                 event.bookId(),
                 event.eventId()
@@ -58,7 +57,7 @@ public class IncreaseBookStockCommandHandler implements LoanReturnedEventListene
             Book book = bookRepository.findById(DomainId.from(command.bookId()))
                     .orElseThrow(() -> new IllegalArgumentException("İade edilecek kitap bulunamadı."));
 
-            book.increaseStock(1); // Domain mantığı ile stok artışı
+            book.increaseStock(1);
 
             // VERİTABANINA KAYIT
             bookRepository.save(book);

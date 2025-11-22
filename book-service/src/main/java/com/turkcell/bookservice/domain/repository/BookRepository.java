@@ -12,4 +12,5 @@ public interface BookRepository {
     List<Book> findAll();
     List<Book> findAllPaged(Integer pageIndex, Integer pageSize);
     void delete(DomainId<Book> bookId);
+
 }

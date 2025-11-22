@@ -50,7 +50,7 @@ public class Book extends BaseAggregateRoot {
         validateTitle(title);
         checkYear(year);
         validateLanguage(language);
-        checkAmount(totalCopies);
+        checkTotalCopiesAmount(totalCopies);
         checkPrice(price);
         Isbn isbn = Isbn.generate();
 
@@ -59,7 +59,7 @@ public class Book extends BaseAggregateRoot {
                 authorId, publisherId, categoryId, price);
 
         book.registerEvent(new BookCreatedEvent(
-                book.id().value(), book.isbn.value(), title,
+                book.id().value(), book.isbn.value(), book.title,
                 authorId.value(), publisherId.value(), categoryId.value(), book.totalCopies));
 
         return book;
@@ -76,7 +76,7 @@ public class Book extends BaseAggregateRoot {
 
     public void increaseStock(Integer quantity) {
         if (quantity == null || quantity <= 0)
-            throw new IllegalArgumentException("Quantity to restock must be greater than 0");
+            throw new IllegalArgumentException("Quantity must be greater than 0");
 
         this.availableCopies += quantity;
         ensureStockConsistency();
@@ -94,7 +94,7 @@ public class Book extends BaseAggregateRoot {
         if (this.availableCopies < quantity)
             throw new IllegalArgumentException("Not enough copies");
 
-        this.totalCopies -= quantity;
+        this.availableCopies -= quantity;
         ensureStockConsistency();
 
         this.registerEvent(new BookStockChangedEvent(
@@ -104,29 +104,52 @@ public class Book extends BaseAggregateRoot {
         ));
     }
 
+    public void changeTotalStock(Integer newTotalCopies) {
+        checkTotalCopiesAmount(newTotalCopies); // amount < 0 olmasın
+
+        Integer delta = newTotalCopies - this.totalCopies;
+
+        if (delta > 0) {
+            // Stok artırılıyor
+            this.totalCopies = newTotalCopies;
+            this.availableCopies += delta; // Yeni gelen stok da kullanılabilir hale gelir
+        } else if (delta < 0) {
+            // Stok azaltılıyor
+            if (newTotalCopies < this.availableCopies) {
+                throw new IllegalArgumentException("Cannot reduce total stock below currently available copies");
+            }
+            this.totalCopies = newTotalCopies;
+            // availableCopies değişmez
+        }
+        // Eğer delta = 0 ise, değişiklik yok.
+
+        ensureStockConsistency();
+        // StockChangedEvent yayınlanmalı, çünkü toplam stok değişimi availableCopies'i etkilemiş olabilir.
+        this.registerEvent(new BookStockChangedEvent(
+                this.id().value(),
+                this.availableCopies,
+                "TotalStockChanged"
+        ));
+    }
+
     public void rename(String title) {
         validateTitle(title);
         this.title = title;
     }
-
     public void changeYear(Integer year) {
         checkYear(year);
         this.year = year;
     }
-
     public void changeLanguage(String language) {
         validateLanguage(language);
         this.language = language;
     }
-
     public void activate(){
         status = BookStatus.ACTIVE;
     }
-
     public void deactivate(){
         status = BookStatus.INACTIVE;
     }
-
     public void resetAvailableCopies() {
         this.availableCopies = this.totalCopies;
         this.status = this.availableCopies > 0 ? BookStatus.ACTIVE : BookStatus.INACTIVE;
@@ -147,31 +170,26 @@ public class Book extends BaseAggregateRoot {
             throw new IllegalArgumentException("Year cannot be in the future");
         }
     }
-
     private static void checkPrice(BigDecimal price) {
         if (price == null) throw new IllegalArgumentException("Price cannot be null");
         if (price.compareTo(BigDecimal.ZERO) < 0) throw new IllegalArgumentException("Price cannot be negative");
     }
-
     private static void validateTitle(String title){
         if(title == null || title.trim().isEmpty())
             throw new IllegalArgumentException("Title cannot be null or whitespace");
         if(title.length() >= 255)
             throw new IllegalArgumentException("Title length must be less than 255 characters");
     }
-
     private static void validateLanguage(String language){
         if(language == null || language.trim().isEmpty())
             throw new IllegalArgumentException("Language cannot be null or empty");
         if(language.length() < 2 || language.length() > 15)
             throw new IllegalArgumentException("Language length must be between 2 and 15 characters");
     }
-
-    private static void checkAmount(Integer amount){
-        if (amount == null || amount <= 0)
-            throw new IllegalArgumentException("Amount must be greater than 0");
+    private static void checkTotalCopiesAmount(Integer amount){
+        if (amount == null || amount < 0)
+            throw new IllegalArgumentException("Total copies cannot be negative");
     }
-
     private void ensureStockConsistency() {
         if (this.availableCopies < 0)
             throw new IllegalStateException("Available copies cannot be negative");

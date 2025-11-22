@@ -2,7 +2,7 @@ package com.turkcell.borrowservice.infrastructure.messaging.kafka;
 
 
 import com.turkcell.borrowservice.application.ports.output.eventproducer.KafkaEventProducerPort;
-import com.turkcell.borrowservice.infrastructure.messaging.relayer.OutboxEventPersister;
+import com.turkcell.borrowservice.infrastructure.messaging.outbox.relayer.OutboxEventPersister;
 import com.turkcell.common.events.DomainEvent;
 import org.springframework.stereotype.Service;
 

@@ -9,8 +9,12 @@ public record Isbn(String value) implements Serializable {
         Objects.requireNonNull(value, "value is null");
         if(value.isBlank()) throw new IllegalArgumentException("ISBN cannot be blank");
     }
-
+    /**
+     * Benzersizlik garantisi için UUID tabanlı değer üreten metot.
+     * Bu metot veritabanı kontrolüne gerek kalmadan yüksek olasılıkla benzersiz bir değer üretir.
+     */
     public static Isbn generate() {
-        return new Isbn("ISBN-" + UUID.randomUUID().toString().substring(0, 13));
+        // UUID kullanılarak pratik olarak benzersiz (collision risk'i ihmal edilebilir) bir değer üretilir.
+        return new Isbn("AUTO-ISBN-" + UUID.randomUUID().toString());
     }
 }

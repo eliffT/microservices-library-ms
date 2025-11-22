@@ -1,7 +1,5 @@
 package com.turkcell.borrowservice.infrastructure.messaging.kafka.consumer;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.turkcell.borrowservice.application.queries.handler.listener.InventoryUpdateListener;
 import com.turkcell.common.events.BookCreatedEvent;
 import com.turkcell.common.events.BookStockChangedEvent;
@@ -11,7 +9,7 @@ import org.springframework.messaging.handler.annotation.Payload;
 import org.springframework.stereotype.Component;
 
 /**
- * Inventory servisinden gelen BookStockChangedEvent olaylarını dinler.
+ * Borrow servisinden gelen BookStockChangedEvent olaylarını dinler.
  * Spring Kafka, Header Deserialization kullanarak payload'ı doğrudan BookStockChangedEvent DTO'suna dönüştürür.
  */
 
@@ -24,14 +22,12 @@ public class BookStatusKafkaConsumer {
         this.inventoryUpdateListener = inventoryUpdateListener;
     }
 
-    // 1. Stok Değişikliği Olayı
     @KafkaListener(topics = "${kafka.topics.inventory}", // application.properties'den okunacak topic
             groupId = "${spring.kafka.consumer.group-id}")
-    // @Payload kullanarak doğrudan BookStockChangedEvent nesnesini alınır
+    // @Payload kullanarak doğrudan DomainEvent nesnesini alınır
     public void consumeInventoryEvents(@Payload DomainEvent event) {
         try {
-            // Spring Kafka, __TypeId__ başlığı sayesinde event'i doğru tipe dönüştürdü.
-            // Şimdi tip kontrolü yaparak yönlendirme yapmalıyız.
+            // Spring Kafka, __TypeId__ başlığı sayesinde event'i doğru tipe dönüştürülür
 
             if (event instanceof BookStockChangedEvent bookStockChangedEvent) {
 
