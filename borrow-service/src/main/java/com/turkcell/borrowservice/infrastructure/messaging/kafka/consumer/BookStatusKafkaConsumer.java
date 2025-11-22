@@ -9,7 +9,7 @@ import org.springframework.messaging.handler.annotation.Payload;
 import org.springframework.stereotype.Component;
 
 /**
- * Borrow servisinden gelen BookStockChangedEvent olaylarını dinler.
+ * Book servisinden gelen BookStockChangedEvent olaylarını dinler.
  * Spring Kafka, Header Deserialization kullanarak payload'ı doğrudan BookStockChangedEvent DTO'suna dönüştürür.
  */
 
