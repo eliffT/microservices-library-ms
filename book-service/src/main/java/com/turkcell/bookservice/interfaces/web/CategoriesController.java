@@ -1,9 +1,9 @@
 package com.turkcell.bookservice.interfaces.web;
 
-import com.turkcell.bookservice.application.category.command.CreateCategoryCommand;
-import com.turkcell.bookservice.application.category.dto.CategoryResponse;
-import com.turkcell.bookservice.application.category.dto.CreatedCategoryResponse;
-import com.turkcell.bookservice.application.category.query.ListCategoriesQuery;
+import com.turkcell.bookservice.application.commands.CreateCategoryCommand;
+import com.turkcell.bookservice.application.dto.CategoryResponse;
+import com.turkcell.bookservice.application.dto.CreatedCategoryResponse;
+import com.turkcell.bookservice.application.query.ListCategoriesQuery;
 import com.turkcell.bookservice.core.cqrs.CommandHandler;
 import com.turkcell.bookservice.core.cqrs.QueryHandler;
 import jakarta.validation.Valid;

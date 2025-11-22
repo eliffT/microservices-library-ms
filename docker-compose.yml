@@ -10,6 +10,17 @@ services:
     volumes:
       - bookdb_vol:/var/lib/postgresql/data
 
+  borrowsv_db:
+    image: postgres:16
+    environment:
+      POSTGRES_DB: borrow_service
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: borrow_service_db_password
+    ports:
+      - 5434:5432
+    volumes:
+      - borrowdb_vol:/var/lib/postgresql/data
+
   usersv_db:
     image: postgres:16
     environment:
@@ -23,7 +34,7 @@ services:
 
   kafka:
     image: apache/kafka:3.8.0
-    container_name: kafkaui
+    container_name: kafka
     restart: unless-stopped
     ports:
       - "9092:9092"   # container içi (PLAINTEXT) - diğer container'lar için
@@ -104,4 +115,5 @@ volumes:
   kc_pg_data: { }
   bookdb_vol: { }
   userdb_vol: { }
+  borrowdb_vol: {}
 

@@ -18,6 +18,8 @@
         <option value="$PROJECT_DIR$/author-service/bff-service/pom.xml" />
         <option value="$PROJECT_DIR$/bff-service/pom.xml" />
         <option value="$PROJECT_DIR$/borrow-service/pom.xml" />
+        <option value="$PROJECT_DIR$/common-events/pom.xml" />
+        <option value="$PROJECT_DIR$/pom.xml" />
       </list>
     </option>
     <option name="ignoredFiles">

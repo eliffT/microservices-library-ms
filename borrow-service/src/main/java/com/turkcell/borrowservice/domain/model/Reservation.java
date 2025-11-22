@@ -1,19 +1,25 @@
 package com.turkcell.borrowservice.domain.model;
 
-import java.time.LocalDate;
+import com.turkcell.borrowservice.domain.model.enumstatus.ReservationStatus;
+import com.turkcell.common.events.ReservationCancelledEvent;
+import com.turkcell.common.events.ReservationCreatedEvent;
+import com.turkcell.common.events.ReservationFulfilledEvent;
+
+import java.time.OffsetDateTime;
 import java.util.UUID;
 
-public class Reservation {
+public class Reservation extends BaseAggregateRoot{
 
     private final DomainId<Reservation> id;
     private final UUID userId;
     private final UUID bookId;
-    private LocalDate reservationDate;
-    private LocalDate expireDate;
+    private OffsetDateTime reservationDate;
+    private OffsetDateTime expireDate;
     private ReservationStatus status;
 
-    private Reservation(DomainId<Reservation>  id, UUID userId, UUID bookId, LocalDate reservationDate,
-                        LocalDate expireDate, ReservationStatus status) {
+
+    private Reservation(DomainId<Reservation>  id, UUID userId, UUID bookId, OffsetDateTime reservationDate,
+                        OffsetDateTime expireDate, ReservationStatus status) {
         this.id = id;
         this.userId = userId;
         this.bookId = bookId;
@@ -22,38 +28,83 @@ public class Reservation {
         this.status = status;
     }
 
-    public static Reservation create(UUID userId, UUID bookId, int loanDays){
+    public static Reservation create(UUID userId, UUID bookId){
 
         if (userId == null) throw new IllegalArgumentException("User cannot be null");
         if (bookId == null) throw new IllegalArgumentException("Book cannot be null");
-        LocalDate reservationDate = LocalDate.now();
-        if (loanDays <= 0) throw new IllegalArgumentException("Loan days cannot be less than zero");
 
-        LocalDate expireDate = reservationDate.plusDays(loanDays);
-        return new Reservation(DomainId.generate(), userId, bookId, reservationDate, expireDate, ReservationStatus.ACTIVE);
+        Reservation reservation = new Reservation
+                (DomainId.generate(), userId, bookId, OffsetDateTime.now(), null, ReservationStatus.ACTIVE);
+
+        reservation.registerEvent(new ReservationCreatedEvent(
+                reservation.id().value(),
+                userId,
+                bookId
+        ));
+        return reservation;
     }
 
     public static Reservation rehydrate(DomainId<Reservation> id, UUID userId, UUID bookId,
-                                        LocalDate reservationDate, LocalDate expireDate, ReservationStatus status)
+                                        OffsetDateTime reservationDate, OffsetDateTime expireDate, ReservationStatus status)
     {
         return new Reservation(id, userId, bookId, reservationDate, expireDate, status);
     }
 
-    public void cancel() {
-        if (status != ReservationStatus.ACTIVE)
-            throw new IllegalStateException("Only active reservations can be cancelled");
-        status = ReservationStatus.CANCELLED;
+    // Rezervasyon stok geldikten sonra aktif hale getirildiğinde kullanılır
+    public void fulfill(int pickupHours) {
+        if (status != ReservationStatus.ACTIVE) {
+            throw new IllegalStateException("Only active reservations can be fulfilled.");
+        }
+
+        this.status = ReservationStatus.FULFILLED;
+
+        OffsetDateTime newExpireDate = OffsetDateTime.now().plusHours(pickupHours);
+        this.expireDate = newExpireDate;
+
+        this.registerEvent(new ReservationFulfilledEvent(
+                this.id().value(),
+                this.userId,
+                this.bookId,
+                newExpireDate
+        ));
     }
 
-    public boolean isExpired(LocalDate today) {
+    // Kullanıcı tarafıda iptal
+    public void cancel() {
+        if (status != ReservationStatus.ACTIVE && status != ReservationStatus.FULFILLED)
+            throw new IllegalStateException("Only active or fulfilled reservations can be cancelled");
+        status = ReservationStatus.CANCELLED;
+
+        this.registerEvent(new ReservationCancelledEvent(
+                this.id().value(),
+                this.bookId,
+                "Manual"
+        ));
+    }
+
+    public boolean isExpired(OffsetDateTime today) {
+        if (expireDate == null) return false;
         return today.isAfter(expireDate);
     }
 
+    // Rezervasyon süresi doldu
     public void markAsExpired() {
-        if (!isExpired(LocalDate.now())) {
+        if (status != ReservationStatus.FULFILLED)
+            throw new IllegalStateException("Only fulfilled reservations can be marked as expired.");
+
+        if (expireDate == null)
+            throw new IllegalStateException("For reservations that have not expired, expireAt cannot be null.");
+
+        if (!isExpired(OffsetDateTime.now()))
             throw new IllegalStateException("Cannot mark as expired before expiration date");
-        }
-        status = ReservationStatus.EXPIRED;
+
+        // expireAt geçerse rezervasyon CANCELLED olur.
+        status = ReservationStatus.CANCELLED;
+        this.registerEvent(new ReservationCancelledEvent(
+                this.id().value(),
+                this.bookId,
+                "Expired"
+        ));
     }
 
     public DomainId<Reservation>  id() {
@@ -61,10 +112,10 @@ public class Reservation {
     }
     public UUID userId() { return userId; }
     public UUID bookId() { return bookId; }
-    public LocalDate reservationDate() {
+    public OffsetDateTime reservationDate() {
         return reservationDate;
     }
-    public LocalDate expireDate() {
+    public OffsetDateTime expireDate() {
         return expireDate;
     }
     public ReservationStatus status() {

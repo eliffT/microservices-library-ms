@@ -1,13 +1,12 @@
 package com.turkcell.bookservice.interfaces.web;
 
 
-import com.turkcell.bookservice.application.book.command.*;
+import com.turkcell.bookservice.application.dto.BookResponse;
 
-import com.turkcell.bookservice.application.book.dto.BookResponse;
+import com.turkcell.bookservice.application.dto.CreatedBookResponse;
 
-import com.turkcell.bookservice.application.book.dto.CreatedBookResponse;
-
-import com.turkcell.bookservice.application.book.query.ListBooksQuery;
+import com.turkcell.bookservice.application.query.ListBooksQuery;
+import com.turkcell.bookservice.application.commands.CreateBookCommand;
 import com.turkcell.bookservice.core.cqrs.CommandHandler;
 import com.turkcell.bookservice.core.cqrs.QueryHandler;
 import jakarta.validation.Valid;

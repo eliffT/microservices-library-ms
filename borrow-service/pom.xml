@@ -2,17 +2,21 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
+
+    <!-- 1. YENİ PARENT POM'U MİRAS ALIYORUZ -->
     <parent>
-        <groupId>org.springframework.boot</groupId>
-        <artifactId>spring-boot-starter-parent</artifactId>
-        <version>3.5.7</version>
-        <relativePath/> <!-- lookup parent from repository -->
+        <groupId>com.turkcell</groupId>
+        <artifactId>microservice-parent</artifactId>
+        <version>1.0.0-SNAPSHOT</version>
+        <relativePath>../pom.xml</relativePath> <!-- Parent'ın konumunu belirtiyoruz -->
     </parent>
-    <groupId>com.turkcell</groupId>
+
+    <!-- 2. groupId'yi Parent'tan miras alıyoruz -->
     <artifactId>borrow-service</artifactId>
-    <version>0.0.1-SNAPSHOT</version>
     <name>borrow-service</name>
-    <description>borrow-service</description>
+    <description>Borrow Service for managing book loans and returns</description>
+
+    <!-- Metadata (url, licenses, scm) bu servise aittir -->
     <url/>
     <licenses>
         <license/>
@@ -26,11 +30,17 @@
         <tag/>
         <url/>
     </scm>
-    <properties>
-        <java.version>21</java.version>
-        <spring-cloud.version>2025.0.0</spring-cloud.version>
-    </properties>
+    <!-- 3. properties bloğunu siliyoruz, çünkü java.version ve spring-cloud.version artık Parent'tan miras alınıyor -->
+
     <dependencies>
+        <!-- 4. ORTAK EVENT BAĞIMLILIĞI -->
+        <dependency>
+            <groupId>com.turkcell</groupId>
+            <artifactId>common-events</artifactId>
+            <!-- Versiyon, Parent'taki <dependencyManagement> bloğundan otomatik olarak alınacaktır -->
+        </dependency>
+
+        <!-- Spring Boot Starters -->
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-actuator</artifactId>
@@ -38,6 +48,25 @@
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-web</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-data-jpa</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-validation</artifactId>
+        </dependency>
+
+        <!-- Spring Cloud Starters (Versiyonsuz eklenir, versiyonu Parent yönetir) -->
+        <dependency>
+            <groupId>org.springframework.cloud</groupId>
+            <artifactId>spring-cloud-stream</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>org.springframework.cloud</groupId>
+            <artifactId>spring-cloud-stream-binder-kafka</artifactId>
         </dependency>
         <dependency>
             <groupId>org.springframework.cloud</groupId>
@@ -48,29 +77,27 @@
             <artifactId>spring-cloud-starter-netflix-eureka-client</artifactId>
         </dependency>
 
+        <!-- Diğer Bağımlılıklar -->
+        <dependency>
+            <groupId>org.postgresql</groupId>
+            <artifactId>postgresql</artifactId>
+        </dependency>
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-devtools</artifactId>
             <scope>runtime</scope>
             <optional>true</optional>
         </dependency>
+
+        <!-- Test Bağımlılığı -->
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-test</artifactId>
             <scope>test</scope>
         </dependency>
     </dependencies>
-    <dependencyManagement>
-        <dependencies>
-            <dependency>
-                <groupId>org.springframework.cloud</groupId>
-                <artifactId>spring-cloud-dependencies</artifactId>
-                <version>${spring-cloud.version}</version>
-                <type>pom</type>
-                <scope>import</scope>
-            </dependency>
-        </dependencies>
-    </dependencyManagement>
+
+    <!-- 5. dependencyManagement bloğu SİLİNMİŞTİR -->
 
     <build>
         <plugins>

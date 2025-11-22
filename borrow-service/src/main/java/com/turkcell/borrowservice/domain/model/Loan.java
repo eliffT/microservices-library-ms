@@ -1,31 +1,29 @@
 package com.turkcell.borrowservice.domain.model;
 
-import com.turkcell.borrowservice.domain.event.LoanCreatedEvent;
-import com.turkcell.borrowservice.domain.event.LoanReturnedEvent;
+import com.turkcell.borrowservice.domain.model.enumstatus.LoanStatus;
+import com.turkcell.common.events.LoanCreatedEvent;
+import com.turkcell.common.events.LoanReturnedEvent;
 
 import java.math.BigDecimal;
-import java.time.LocalDate;
+import java.time.OffsetDateTime;
 import java.time.temporal.ChronoUnit;
-import java.util.Optional;
-import java.util.UUID;
+import java.util.*;
 
-public class Loan {
+public class Loan extends BaseAggregateRoot {
 
     private final DomainId<Loan> id;
     private final UUID userId;
     private  final UUID bookId;
-    private LocalDate borrowDate;
-    private LocalDate dueDate;
-    private LocalDate returnDate;
+    private OffsetDateTime borrowDate;
+    private OffsetDateTime dueDate;
+    private OffsetDateTime returnDate;
     private LoanStatus status;
-    private Object domainEvent;
-
 
     // Sabit günlük gecikme ücreti
     private static final BigDecimal DAILY_LATE_FEE = new BigDecimal("15");
 
 
-    private Loan(DomainId<Loan> id, UUID userId, UUID bookId, LocalDate borrowDate, LocalDate dueDate,
+    private Loan(DomainId<Loan> id, UUID userId, UUID bookId, OffsetDateTime borrowDate, OffsetDateTime dueDate,
                  LoanStatus status) {
 
         this.id = id;
@@ -38,26 +36,28 @@ public class Loan {
 
     public static Loan create(UUID userId, UUID bookId,  int loanDays){
 
-        LocalDate borrowDate = LocalDate.now();
+        OffsetDateTime borrowDate = OffsetDateTime.now();
         if (loanDays <= 0) throw new IllegalArgumentException("Loan days must be greater than 0");
-        LocalDate dueDate = borrowDate.plusDays(loanDays);
+        OffsetDateTime dueDate = borrowDate.plusDays(loanDays);
 
-        Loan loan = new Loan(DomainId.generate(), userId, bookId,  borrowDate, dueDate, LoanStatus.BORROWED);
-        loan.domainEvent = new LoanCreatedEvent(
-                loan.id.value(),
-                loan.userId,
-                loan.bookId,
+        Loan loan =  new Loan(DomainId.generate(), userId, bookId,  borrowDate, dueDate, LoanStatus.BORROWED);
+        loan.registerEvent(new LoanCreatedEvent(
+                loan.id().value(),
+                userId,
+                bookId,
                 borrowDate,
-                dueDate);
+                dueDate
+        ));
+
         return loan;
     }
 
     public static Loan rehydrate(DomainId<Loan> id,
                                  UUID userId,
                                  UUID bookId,
-                                 LocalDate borrowDate,
-                                 LocalDate dueDate,
-                                 LocalDate returnDate,
+                                 OffsetDateTime borrowDate,
+                                 OffsetDateTime dueDate,
+                                 OffsetDateTime returnDate,
                                  LoanStatus status) {
 
         Loan loan = new Loan(id, userId, bookId, borrowDate, dueDate, status);
@@ -66,12 +66,11 @@ public class Loan {
         return loan;
     }
 
-
     public Optional<Fine> calculateLateFine() {
-        LocalDate endDate = returnDate != null ? returnDate : LocalDate.now();
+        OffsetDateTime endDate = returnDate != null ? returnDate : OffsetDateTime.now();
         if(endDate.isAfter(dueDate)) {
             int daysLate = (int) ChronoUnit.DAYS.between(dueDate, endDate);
-            return Optional.of(Fine.forLate(daysLate, DAILY_LATE_FEE));
+            return Optional.of(Fine.forLate(this.userId(), this.id().value(), daysLate, DAILY_LATE_FEE));
         }
         return Optional.empty(); // gecikme yok
     }
@@ -83,18 +82,18 @@ public class Loan {
     public void markAsReturned() {
         if(!isActive()) throw new IllegalStateException("Only borrowed or late loans can be returned");
         this.status = LoanStatus.RETURNED;
-        this.returnDate = LocalDate.now();
+        this.returnDate = OffsetDateTime.now();
 
-        this.domainEvent = new LoanReturnedEvent(
-                id.value(),
-                userId,
-                bookId,
-                returnDate
-        );
+        this.registerEvent(new LoanReturnedEvent(
+                this.id().value(),
+                this.userId,
+                this.bookId,
+                this.returnDate
+        ));
     }
 
     // Ödünç alınan kitapların teslim tarihi kontrol edilir, gecikmiş ise LATE atanır
-    public boolean checkAndMarkOverdue(LocalDate today) {
+    public boolean checkAndMarkOverdue(OffsetDateTime today) {
         if (status == LoanStatus.BORROWED && today.isAfter(dueDate)) {
             status = LoanStatus.LATE;
             return true;
@@ -102,16 +101,26 @@ public class Loan {
         return false; // Gecikme yoksa false
     }
 
-
-
     //Getters
-    public DomainId<Loan> id() { return id; }
-    public UUID userId() {return userId;}
-    public LocalDate borrowDate() { return borrowDate; }
-    public LocalDate dueDate() { return dueDate; }
-    public LocalDate returnDate() { return returnDate; }
-    public LoanStatus status() { return status; }
-    public UUID bookId() {return bookId;}
-    public Object domainEvent() {return domainEvent;}
-
+    public DomainId<Loan> id() {
+        return id;
+    }
+    public UUID userId() {
+        return userId;
+    }
+    public UUID bookId() {
+        return bookId;
+    }
+    public OffsetDateTime borrowDate() {
+        return borrowDate;
+    }
+    public OffsetDateTime dueDate() {
+        return dueDate;
+    }
+    public OffsetDateTime returnDate() {
+        return returnDate;
+    }
+    public LoanStatus status() {
+        return status;
+    }
 }
