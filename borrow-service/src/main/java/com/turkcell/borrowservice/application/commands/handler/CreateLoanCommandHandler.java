@@ -23,7 +23,7 @@ public class CreateLoanCommandHandler {
     private final FineRepository fineRepository;
     private final EventPublisher eventPublisher;
     private final UserQueryPort userQueryPort;
-    private final BookQueryPort bookQueryPort;// Feign Client
+    private final BookQueryPort bookQueryPort;  // Feign Client
 
     public CreateLoanCommandHandler(LoanRepository loanRepository,
                                     FineRepository fineRepository,

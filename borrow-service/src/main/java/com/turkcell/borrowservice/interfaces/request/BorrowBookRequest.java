@@ -10,8 +10,5 @@ public record BorrowBookRequest(
         UUID userId,
 
         @NotNull(message = "Book ID cannot be null.")
-        UUID bookId,
-
-        @Min(value = 1, message = "The loan period must be at least 1 day.")
-        int loanDays
+        UUID bookId
 ) {}
