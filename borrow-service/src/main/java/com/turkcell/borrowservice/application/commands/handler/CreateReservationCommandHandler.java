@@ -2,8 +2,9 @@ package com.turkcell.borrowservice.application.commands.handler;
 
 import com.turkcell.borrowservice.application.commands.CreateReservationCommand;
 import com.turkcell.borrowservice.application.exceptions.BusinessException;
-import com.turkcell.borrowservice.application.ports.BookReadModelRepository;
-import com.turkcell.borrowservice.application.ports.output.eventproducer.KafkaEventProducerPort;
+import com.turkcell.borrowservice.application.ports.output.eventproducer.EventPublisher;
+import com.turkcell.borrowservice.application.ports.output.external.BookQueryPort;
+import com.turkcell.borrowservice.application.ports.output.external.UserQueryPort;
 import com.turkcell.borrowservice.domain.model.Reservation;
 import com.turkcell.borrowservice.domain.model.enumstatus.ReservationStatus;
 import com.turkcell.borrowservice.domain.repository.FineRepository;
@@ -16,25 +17,34 @@ import java.util.UUID;
 @Component
 public class CreateReservationCommandHandler {
     private final ReservationRepository reservationRepository;
-    private final KafkaEventProducerPort eventPublisher;
+    private final EventPublisher eventPublisher;
     private final FineRepository fineRepository;
-    private final BookReadModelRepository bookReadModelRepository;
-
+    private final UserQueryPort userQueryPort; // Feign Client
+    private final BookQueryPort bookQueryPort;
 
     public CreateReservationCommandHandler(ReservationRepository reservationRepository,
-                                           KafkaEventProducerPort eventPublisher,
+                                           EventPublisher eventPublisher,
                                            FineRepository fineRepository,
-                                           BookReadModelRepository bookReadModelRepository) {
+                                           UserQueryPort userQueryPort, BookQueryPort bookQueryPort) {
         this.reservationRepository = reservationRepository;
         this.eventPublisher = eventPublisher;
         this.fineRepository = fineRepository;
-        this.bookReadModelRepository = bookReadModelRepository;
+        this.userQueryPort = userQueryPort;
+        this.bookQueryPort = bookQueryPort;
     }
 
     @Transactional
     public UUID handle(CreateReservationCommand command) {
 
-        // 1. İŞ KURALLARI KONTROLÜ (Pre-Conditions)
+
+
+        // KRİTİK KURAL: BANNED KONTROLÜ (Senkron API Çağrısı)
+        String memberStatus = userQueryPort.getMembershipLevel(command.userId());
+
+        if (memberStatus.equals("BANNED")) {
+            // Business Rule 3: BANNED üyeler ödünç/rezervasyon yapamaz.
+            throw new BusinessException("User ID: " + command.userId() + " is BANNED and cannot create a reservation.");
+        }
 
         // Kural A: Üyenin genel cezası varsa rezervasyon yapamaz (Önceki kuralınız, geçerliliğini korur).
         if (fineRepository.existsByUserIdAndIsPaid(command.userId(), false)) {
@@ -47,8 +57,8 @@ public class CreateReservationCommandHandler {
         }
 
         // Kural C: availableCopies == 0 değilse RET (Stok varsa direkt ödünç alınmalı - Kural 1'in tersi)
-        // BookReadModelRepository, kitabın anlık stok durumunu verir.
-        int availableStock = bookReadModelRepository.getAvailableStock(command.bookId());
+        //  BookQueryPort, kitabın anlık (Hard Consistency) stok durumunu verir.
+        int availableStock = bookQueryPort.getAvailableCopies(command.bookId());
 
         if (availableStock > 0) {
             // Eğer stok varsa, rezervasyon yerine direkt ödünç alma önerilir.

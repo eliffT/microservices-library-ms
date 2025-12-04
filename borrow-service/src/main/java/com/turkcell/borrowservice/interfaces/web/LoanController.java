@@ -2,7 +2,7 @@ package com.turkcell.borrowservice.interfaces.web;
 
 import com.turkcell.borrowservice.application.commands.BorrowBookCommand;
 import com.turkcell.borrowservice.application.commands.ReturnBookCommand;
-import com.turkcell.borrowservice.application.commands.handler.LoanCreatedCommandHandler;
+import com.turkcell.borrowservice.application.commands.handler.CreateLoanCommandHandler;
 import com.turkcell.borrowservice.application.queries.handler.ListUserLoansQueryHandler;
 import com.turkcell.borrowservice.application.commands.handler.ReturnBookCommandHandler;
 import com.turkcell.borrowservice.application.queries.ListUserLoansQuery;
@@ -22,11 +22,13 @@ import java.util.UUID;
 @RequestMapping("/api/v1/loans")
 public class LoanController {
 
-    private final LoanCreatedCommandHandler borrowHandler;
+    private final CreateLoanCommandHandler borrowHandler;
     private final ReturnBookCommandHandler returnHandler;
     private final ListUserLoansQueryHandler listLoansQueryHandler;
 
-    public LoanController(LoanCreatedCommandHandler borrowHandler, ReturnBookCommandHandler returnHandler, ListUserLoansQueryHandler listLoansQueryHandler) {
+    public LoanController(CreateLoanCommandHandler borrowHandler,
+                          ReturnBookCommandHandler returnHandler,
+                          ListUserLoansQueryHandler listLoansQueryHandler) {
         this.borrowHandler = borrowHandler;
         this.returnHandler = returnHandler;
         this.listLoansQueryHandler = listLoansQueryHandler;
@@ -38,8 +40,7 @@ public class LoanController {
         // 1. Web Request'i Application Command'a dönüştürülür
         BorrowBookCommand command = new BorrowBookCommand(
                 request.userId(),
-                request.bookId(),
-                request.loanDays()
+                request.bookId()
         );
         // 2. Command Handler çağrılır
         UUID loanId = borrowHandler.handle(command);

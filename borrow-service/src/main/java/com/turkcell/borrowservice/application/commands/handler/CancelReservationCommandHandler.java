@@ -3,7 +3,7 @@ package com.turkcell.borrowservice.application.commands.handler;
 import com.turkcell.borrowservice.application.commands.CancelReservationCommand;
 
 import com.turkcell.borrowservice.application.exceptions.NotFoundException;
-import com.turkcell.borrowservice.application.ports.output.eventproducer.KafkaEventProducerPort;
+import com.turkcell.borrowservice.application.ports.output.eventproducer.EventPublisher;
 import com.turkcell.borrowservice.domain.model.DomainId;
 import com.turkcell.borrowservice.domain.model.Reservation;
 import com.turkcell.borrowservice.domain.repository.ReservationRepository;
@@ -15,11 +15,11 @@ import java.util.UUID;
 @Component
 public class CancelReservationCommandHandler {
     private final ReservationRepository reservationRepository;
-    private final KafkaEventProducerPort eventPublisher;
+    private final EventPublisher eventPublisher;
     private final FulfillNextReservationCommandHandler fulfillNextHandler;
 
     public CancelReservationCommandHandler(ReservationRepository reservationRepository,
-                                           KafkaEventProducerPort eventPublisher,
+                                           EventPublisher eventPublisher,
                                            FulfillNextReservationCommandHandler fulfillNextHandler) {
         this.reservationRepository = reservationRepository;
         this.eventPublisher = eventPublisher;

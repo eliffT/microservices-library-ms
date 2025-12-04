@@ -115,7 +115,7 @@ public class Book extends BaseAggregateRoot {
             this.availableCopies += delta; // Yeni gelen stok da kullanılabilir hale gelir
         } else if (delta < 0) {
             // Stok azaltılıyor
-            if (newTotalCopies < this.availableCopies) {
+            if (newTotalCopies <= this.availableCopies) {
                 throw new IllegalArgumentException("Cannot reduce total stock below currently available copies");
             }
             this.totalCopies = newTotalCopies;

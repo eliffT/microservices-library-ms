@@ -3,7 +3,7 @@ package com.turkcell.borrowservice.infrastructure.persistence.adapter;
 import com.turkcell.borrowservice.application.ports.BookReadModelRepository;
 import com.turkcell.borrowservice.application.ports.output.BookReadModel;
 import com.turkcell.borrowservice.infrastructure.mapper.BookModelEntityMapper;
-import com.turkcell.borrowservice.infrastructure.persistence.entity.BookReadModelEntity;
+import com.turkcell.borrowservice.infrastructure.persistence.entity.readmodel.BookReadModelEntity;
 import com.turkcell.borrowservice.infrastructure.persistence.jparepository.BookReadModelJpaRepository;
 import org.springframework.stereotype.Repository;
 
@@ -43,6 +43,11 @@ public class BookReadModelRepositoryAdapter implements BookReadModelRepository {
     @Override
     public boolean isBookAvailable(UUID bookId) {
         return jpaRepository.existsByBookIdAndIsAvailable(bookId, true);
+    }
+
+    @Override
+    public void deleteById(UUID bookId) {
+        jpaRepository.deleteById(bookId);
     }
 
 

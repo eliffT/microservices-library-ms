@@ -5,7 +5,7 @@ import com.turkcell.common.events.DomainEvent;
 import java.util.List;
 
 // Event gönderme işlevini soyutlayan Port
-public interface KafkaEventProducerPort {
+public interface EventPublisher {
 
     void publish(List<DomainEvent> events);
 

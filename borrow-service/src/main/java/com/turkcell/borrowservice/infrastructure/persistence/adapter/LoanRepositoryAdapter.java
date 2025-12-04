@@ -51,6 +51,11 @@ public class LoanRepositoryAdapter implements LoanRepository {
     }
 
     @Override
+    public long countByUserIdAndStatusIn(UUID userId, List<LoanStatus> statuses) {
+        return jpaRepository.countByUserIdAndStatusIn(userId, statuses);
+    }
+
+    @Override
     public List<Loan> findByStatus(LoanStatus status) {
         return jpaRepository.findByStatus(status).stream()
                 .map(mapper::toDomain)

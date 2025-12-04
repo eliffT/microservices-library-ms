@@ -7,7 +7,6 @@ import java.util.UUID;
 
 public record BorrowBookCommand(
        @NotNull UUID userId,
-       @NotNull UUID bookId,
-       @Positive int loanDays
+       @NotNull UUID bookId
 ) {
 }
