@@ -16,4 +16,9 @@ public interface BookReadModelRepository {
     // Kitabın ödünç alınıp alınamayacağını hızlıca kontrol etmek için kullanılır.
     boolean isBookAvailable(UUID bookId);
 
+    void deleteById(UUID bookId);
+
+
+
+
 }

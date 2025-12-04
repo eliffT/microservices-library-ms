@@ -1,4 +1,4 @@
-package com.turkcell.borrowservice.infrastructure.persistence.entity;
+package com.turkcell.borrowservice.infrastructure.persistence.entity.readmodel;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;

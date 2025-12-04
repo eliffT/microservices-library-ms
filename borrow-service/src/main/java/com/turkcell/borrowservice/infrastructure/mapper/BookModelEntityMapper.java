@@ -1,7 +1,7 @@
 package com.turkcell.borrowservice.infrastructure.mapper;
 
 import com.turkcell.borrowservice.application.ports.output.BookReadModel;
-import com.turkcell.borrowservice.infrastructure.persistence.entity.BookReadModelEntity;
+import com.turkcell.borrowservice.infrastructure.persistence.entity.readmodel.BookReadModelEntity;
 import org.springframework.stereotype.Component;
 
 @Component

@@ -1,6 +1,7 @@
 package com.turkcell.bookservice.interfaces.web;
 
 
+import com.turkcell.bookservice.application.commands.DeleteBookCommand;
 import com.turkcell.bookservice.application.dto.BookResponse;
 
 import com.turkcell.bookservice.application.dto.CreatedBookResponse;
@@ -22,11 +23,13 @@ import java.util.List;
 public class BooksController {
 
     private final QueryHandler<ListBooksQuery, List<BookResponse>> listBooksQueryListQueryHandler;
-    private final CommandHandler<CreateBookCommand, CreatedBookResponse> createBookComamndHandler;
+    private final CommandHandler<CreateBookCommand, CreatedBookResponse> createBookCommandHandler;
+    private final CommandHandler<DeleteBookCommand, Void> deleteBookCommandHandler;
 
-    public BooksController(QueryHandler<ListBooksQuery, List<BookResponse>> listBooksQueryListQueryHandler, CommandHandler<CreateBookCommand, CreatedBookResponse> createBookComamndHandler) {
+    public BooksController(QueryHandler<ListBooksQuery, List<BookResponse>> listBooksQueryListQueryHandler, CommandHandler<CreateBookCommand, CreatedBookResponse> createBookComamndHandler, CommandHandler<DeleteBookCommand, Void> deleteBookComamndHandler) {
         this.listBooksQueryListQueryHandler = listBooksQueryListQueryHandler;
-        this.createBookComamndHandler = createBookComamndHandler;
+        this.createBookCommandHandler = createBookComamndHandler;
+        this.deleteBookCommandHandler = deleteBookComamndHandler;
     }
 
     @GetMapping
@@ -38,9 +41,14 @@ public class BooksController {
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public CreatedBookResponse createBook(@Valid @RequestBody CreateBookCommand command){
-        return createBookComamndHandler.handle(command);
+        return createBookCommandHandler.handle(command);
     }
 
+    @DeleteMapping
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void deleteBook(@Valid @RequestBody DeleteBookCommand command){
+        deleteBookCommandHandler.handle(command);
+    }
 
 
 }

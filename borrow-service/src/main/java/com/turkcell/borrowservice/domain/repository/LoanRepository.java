@@ -15,6 +15,7 @@ public interface LoanRepository {
     Optional<Loan> findByUserIdAndBookIdAndStatus(UUID userId, UUID bookId, LoanStatus status);
     // GET /api/loans/members/{memberId}?status=OPEN
     List<Loan> findByUserIdAndStatusIn(UUID userId, List<LoanStatus> statuses);
+    long countByUserIdAndStatusIn(UUID userId, List<LoanStatus> statuses);
     // Scheduled job (Gecikmiş kontrolü)
     List<Loan> findByStatus(LoanStatus status);
     void deleteById(DomainId<Loan> id);

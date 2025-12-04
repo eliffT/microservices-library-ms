@@ -6,12 +6,14 @@ import com.turkcell.borrowservice.application.ports.output.BookReadModel;
 import com.turkcell.borrowservice.infrastructure.messaging.inbox.InboxMessage;
 import com.turkcell.borrowservice.infrastructure.messaging.inbox.InboxRepository;
 import com.turkcell.common.events.BookCreatedEvent;
+import com.turkcell.common.events.BookDeletedEvent;
 import com.turkcell.common.events.BookStockChangedEvent;
 import jakarta.transaction.Transactional;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Component;
 
 import java.util.Optional;
+import java.util.UUID;
 
 // Başka bir servisten gelen kitap stok veya durum değişikliği olayını dinler
 //  ve lokal okuma modelini (BookReadModel) günceller.
@@ -101,6 +103,32 @@ public class InventoryUpdateListener {
             System.err.println("WARN: BookCreatedEvent zaten işlenmiş, Read Model oluşturma atlandı. ID: " + event.getEventId());
         } catch (Exception e) {
             throw new RuntimeException("Yeni Read Model oluşturulmasında hata.", e);
+        }
+    }
+
+
+    @Transactional
+    public void handle(BookDeletedEvent event) {
+        UUID bookId = event.bookId();
+        try {
+            // INBOX KONTROLÜ VE KAYDI (Idempotency)
+            InboxMessage inboxMessage = new InboxMessage(
+                    event.eventId(),
+                    bookId,
+                    event.getAggregateType().toString()
+            );
+            inboxRepository.saveAndFlush(inboxMessage);
+
+            // LOKAL READ MODEL'İ SİLME
+             bookReadModelRepository.deleteById(bookId);
+
+            System.out.println("INFO: BookDeletedEvent alındı. Read Model'den silindi: " + bookId);
+
+        } catch (DataIntegrityViolationException e) {
+            // Aynı olay ID'si zaten işlenmiş. İşlem atlandı.
+            System.err.println("WARN: BookDeletedEvent zaten işlenmiş, Read Model silme atlandı. ID: " + event.eventId());
+        } catch (Exception e) {
+            throw new RuntimeException("Read Model silinmesinde hata.", e);
         }
     }
 }

@@ -3,22 +3,21 @@ package com.turkcell.borrowservice.application.commands.handler;
 import com.turkcell.borrowservice.application.commands.PayFineCommand;
 import com.turkcell.borrowservice.application.exceptions.BusinessException;
 import com.turkcell.borrowservice.application.exceptions.NotFoundException;
+import com.turkcell.borrowservice.application.ports.output.eventproducer.EventPublisher;
 import com.turkcell.borrowservice.domain.model.DomainId;
 import com.turkcell.borrowservice.domain.model.Fine;
 import com.turkcell.borrowservice.domain.repository.FineRepository;
-import com.turkcell.borrowservice.infrastructure.messaging.outbox.relayer.OutboxEventPersister;
 import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Component;
 
 @Component
 public class PayFineCommandHandler {
     private final FineRepository fineRepository;
-    private final OutboxEventPersister outboxService;
+    private final EventPublisher eventPublisher;
 
-    public PayFineCommandHandler(FineRepository fineRepository,
-                                 OutboxEventPersister outboxService) {
+    public PayFineCommandHandler(FineRepository fineRepository, EventPublisher eventPublisher) {
         this.fineRepository = fineRepository;
-        this.outboxService = outboxService;
+        this.eventPublisher = eventPublisher;
     }
 
     @Transactional
@@ -36,7 +35,7 @@ public class PayFineCommandHandler {
         fine.markAsPaid();
 
         fineRepository.save(fine);
-        outboxService.save(fine.getDomainEvents());
+        eventPublisher.publish(fine.getDomainEvents());
         fine.clearDomainEvents();
     }
 }

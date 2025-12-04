@@ -1,6 +1,6 @@
 package com.turkcell.borrowservice.infrastructure.persistence.jparepository;
 
-import com.turkcell.borrowservice.infrastructure.persistence.entity.BookReadModelEntity;
+import com.turkcell.borrowservice.infrastructure.persistence.entity.readmodel.BookReadModelEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.UUID;

@@ -2,7 +2,7 @@ package com.turkcell.borrowservice.application.commands.handler;
 
 import com.turkcell.borrowservice.application.commands.ReturnBookCommand;
 import com.turkcell.borrowservice.application.exceptions.NotFoundException;
-import com.turkcell.borrowservice.application.ports.output.eventproducer.KafkaEventProducerPort;
+import com.turkcell.borrowservice.application.ports.output.eventproducer.EventPublisher;
 import com.turkcell.borrowservice.domain.model.DomainId;
 import com.turkcell.borrowservice.domain.model.Fine;
 import com.turkcell.borrowservice.domain.model.Loan;
@@ -17,12 +17,12 @@ import java.util.Optional;
 public class ReturnBookCommandHandler {
     private final LoanRepository loanRepository;
     private final FineRepository fineRepository;
-    private final KafkaEventProducerPort eventPublisher;
+    private final EventPublisher eventPublisher;
 
 
     public ReturnBookCommandHandler(LoanRepository loanRepository,
                                     FineRepository fineRepository,
-                                    KafkaEventProducerPort eventPublisher) {
+                                    EventPublisher eventPublisher) {
         this.loanRepository = loanRepository;
         this.fineRepository = fineRepository;
        this.eventPublisher = eventPublisher;
