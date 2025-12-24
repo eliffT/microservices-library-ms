@@ -14,7 +14,7 @@ spring:
             - id: borrow-service
               uri: lb://BORROW-SERVICE
               predicates:
-                - Path=/api/v1/borrow/**
+                - Path=/api/v1/loans/**
 
             # User Service Yönlendirmesi
             - id: user-service
