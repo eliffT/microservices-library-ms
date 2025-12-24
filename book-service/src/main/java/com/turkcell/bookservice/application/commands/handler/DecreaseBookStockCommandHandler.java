@@ -50,7 +50,7 @@ public class DecreaseBookStockCommandHandler implements LoanCreatedEventListener
 
             //  STOK DÜŞÜŞÜ
             Book book = bookRepository.findById(DomainId.from(command.bookId()))
-                    .orElseThrow(() -> new IllegalArgumentException("Kitap bulunamadı."));
+                    .orElseThrow(() -> new IllegalArgumentException("The book could not be found."));
 
             book.decreaseStock(1);
 
@@ -66,10 +66,10 @@ public class DecreaseBookStockCommandHandler implements LoanCreatedEventListener
 
         } catch (DataIntegrityViolationException e) {
             // Aynı olay ID'si zaten işlenmiş. İşlem atlandı.
-            System.err.println("WARN: LoanCreatedEvent zaten işlenmiş, stok düşüşü atlandı. ID: " + command.eventId());
+            System.err.println("WARN: LoanCreatedEvent has already been processed, ID: " + command.eventId());
         } catch (Exception e) {
             // Kritik hata: Kafka'da retry tetiklenir.
-            throw new RuntimeException("Stok düşürme işlemi başarısız.", e);
+            throw new RuntimeException("The inventory reduction process fails.", e);
         }
     }
 

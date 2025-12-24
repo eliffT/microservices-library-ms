@@ -34,7 +34,6 @@ public class ReservationEntity {
     public UUID getId() {
         return id;
     }
-
     public void setId(UUID id) {
         this.id = id;
     }
@@ -42,7 +41,6 @@ public class ReservationEntity {
     public UUID getUserId() {
         return userId;
     }
-
     public void setUserId(UUID userId) {
         this.userId = userId;
     }
@@ -50,7 +48,6 @@ public class ReservationEntity {
     public UUID getBookId() {
         return bookId;
     }
-
     public void setBookId(UUID bookId) {
         this.bookId = bookId;
     }
@@ -58,7 +55,6 @@ public class ReservationEntity {
     public OffsetDateTime getReservationDate() {
         return reservationDate;
     }
-
     public void setReservationDate(OffsetDateTime reservationDate) {
         this.reservationDate = reservationDate;
     }
@@ -66,7 +62,6 @@ public class ReservationEntity {
     public ReservationStatus getStatus() {
         return status;
     }
-
     public void setStatus(ReservationStatus status) {
         this.status = status;
     }
@@ -74,7 +69,6 @@ public class ReservationEntity {
     public OffsetDateTime getExpireDate() {
         return expireDate;
     }
-
     public void setExpireDate(OffsetDateTime expireDate) {
         this.expireDate = expireDate;
     }

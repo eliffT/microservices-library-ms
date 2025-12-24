@@ -17,6 +17,7 @@ import java.util.UUID;
 
 // Başka bir servisten gelen kitap stok veya durum değişikliği olayını dinler
 //  ve lokal okuma modelini (BookReadModel) günceller.
+
 @Component
 public class InventoryUpdateListener {
     private final BookReadModelRepository bookReadModelRepository;
@@ -35,7 +36,7 @@ public class InventoryUpdateListener {
      * Kitap stok/durum değişikliği olayını işlerken Inbox Pattern uygular.
      * * @param event Başka bir servisten gelen BookStockChangedEvent olayı
      */
-    @Transactional // Local Read Model'i güncellediği için Transactional olmalıdır.
+    @Transactional
     public void handle(BookStockChangedEvent event) {
         try {
             // INBOX KONTROLÜ VE KAYDI
@@ -46,7 +47,7 @@ public class InventoryUpdateListener {
             );
             inboxRepository.saveAndFlush(inboxMessage);
 
-            // İŞ MANTIĞI: READ MODEL GÜNCELLEME
+            // READ MODEL GÜNCELLEME
             Optional<BookReadModel> optionalModel = bookReadModelRepository.findById(event.getAggregateId());
 
             if (optionalModel.isPresent()) {
@@ -119,13 +120,12 @@ public class InventoryUpdateListener {
             );
             inboxRepository.saveAndFlush(inboxMessage);
 
-            // LOKAL READ MODEL'İ SİLME
+            // LOCAL READ MODEL'İ SİLME
              bookReadModelRepository.deleteById(bookId);
 
             System.out.println("INFO: BookDeletedEvent alındı. Read Model'den silindi: " + bookId);
 
         } catch (DataIntegrityViolationException e) {
-            // Aynı olay ID'si zaten işlenmiş. İşlem atlandı.
             System.err.println("WARN: BookDeletedEvent zaten işlenmiş, Read Model silme atlandı. ID: " + event.eventId());
         } catch (Exception e) {
             throw new RuntimeException("Read Model silinmesinde hata.", e);

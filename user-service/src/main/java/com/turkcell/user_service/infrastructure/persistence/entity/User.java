@@ -43,7 +43,6 @@ public class User {
     public UUID getId() {
         return id;
     }
-
     public void setId(UUID id) {
         this.id = id;
     }
@@ -51,7 +50,6 @@ public class User {
     public String getFirstName() {
         return firstName;
     }
-
     public void setFirstName(String firstName) {
         this.firstName = firstName;
     }
@@ -59,7 +57,6 @@ public class User {
     public String getLastName() {
         return lastName;
     }
-
     public void setLastName(String lastName) {
         this.lastName = lastName;
     }
@@ -67,7 +64,6 @@ public class User {
     public String getEmail() {
         return email;
     }
-
     public void setEmail(String email) {
         this.email = email;
     }
@@ -75,7 +71,6 @@ public class User {
     public String getPhone() {
         return phone;
     }
-
     public void setPhone(String phone) {
         this.phone = phone;
     }
@@ -83,7 +78,6 @@ public class User {
     public LocalDate getCreatedAt() {
         return createdAt;
     }
-
     public void setCreatedAt(LocalDate createdAt) {
         this.createdAt = createdAt;
     }
@@ -91,7 +85,6 @@ public class User {
     public MembershipLevel getMembershipLevel() {
         return membershipLevel;
     }
-
     public void setMembershipLevel(MembershipLevel membershipLevel) {
         this.membershipLevel = membershipLevel;
     }

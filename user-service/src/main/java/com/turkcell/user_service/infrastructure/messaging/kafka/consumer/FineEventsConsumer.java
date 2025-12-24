@@ -30,21 +30,23 @@ public class FineEventsConsumer {
     public void consumeFineEvents(@Payload DomainEvent event) {
 
         if (!(event instanceof DomainEvent domainEvent)) {
-            System.err.println("WARN: Gelen mesaj DomainEvent tipi değil. Atlanıyor: " + event.getAggregateId().toString());
+            System.err.println("WARN: The incoming message is not of type DomainEvent. It is being skipped: "
+                    + event.getAggregateId().toString());
             return;
         }
 
         UUID eventId = domainEvent.getEventId();
         String aggregateType = domainEvent.getAggregateType().toString();
 
-        // 1. Inbox Kontrolü (Idempotency)
+        //  Inbox Kontrolü (Idempotency)
         if (inboxRepository.findById(eventId).isPresent()) {
-            System.out.printf("INFO: Event ID: %s (%s) daha önce işlenmiş. Tekrarlı mesaj atlanıyor.%n", eventId, aggregateType);
+            System.out.printf("INFO: Event ID: %s (%s) has been processed before. Duplicate message is being skipped. %n",
+                    eventId, aggregateType);
             return;
         }
 
         try {
-            // 2. Event Tipine Göre İşleme ve Application Katmanına Delege Etme
+
             if (event instanceof FineCreatedEvent fineCreatedEvent) {
                 fineEventListener.handleFineCreated(fineCreatedEvent);
 
@@ -52,20 +54,23 @@ public class FineEventsConsumer {
                 fineEventListener.handleFinePaid(finePaidEvent);
 
             } else {
-                System.err.printf("WARN: Bilinmeyen Fine Event tipi (%s) geldi. İşlenmiyor.%n", aggregateType);
-                return; // Bilinmeyen tipi kaydetmeden atla
+                System.err.printf("WARN: An unknown Fine Event type (%s) was received. It is not being processed. %n",
+                        aggregateType);
+                return;
             }
 
-            // 3. Başarılı İşlemden Sonra Inbox Kaydını Ekle
-            InboxMessage inboxMessage = new InboxMessage(domainEvent.getEventId(), domainEvent.getAggregateId(), aggregateType, OffsetDateTime.now());
+            // Başarılı İşlemden Sonra Inbox Kaydını Ekle
+            InboxMessage inboxMessage = new InboxMessage(domainEvent.getEventId(), domainEvent.getAggregateId(),
+                    aggregateType, OffsetDateTime.now());
             inboxRepository.save(inboxMessage);
 
-            System.out.printf("SUCCESS: Event (%s - %s) başarıyla işlendi ve Inbox'a kaydedildi.%n", aggregateType, eventId);
+            System.out.printf("SUCCESS: Event (%s - %s) was successfully processed and saved to the Inbox. %n",
+                    aggregateType, eventId);
 
         } catch (Exception e) {
-            System.err.printf("CRITICAL ERROR: Event (%s - %s) işlenirken hata oluştu: %s%n", aggregateType, eventId, e.getMessage());
+            System.err.printf("CRITICAL ERROR: An error occurred while processing Event (%s - %s): %s%n", aggregateType, eventId, e.getMessage());
             // Transactional olduğu için, hata durumunda hem DB değişikliği hem de Inbox kaydı geri alınır.
-            throw new RuntimeException("Event işlenirken hata oluştu, Kafka retry tetikleniyor.", e);
+            throw new RuntimeException("An error occurred while processing the event; a Kafka retry is being triggered.", e);
         }
     }
 }

@@ -20,7 +20,8 @@ public class AuthorsController {
     private final QueryHandler<ListAuthorsQuery, List<AuthorResponse>> listAuthorsQueryListQueryHandler;
     private final CommandHandler<CreateAuthorCommand, CreatedAuthorResponse> createAuthorComamndHandler;
 
-    public AuthorsController(QueryHandler<ListAuthorsQuery, List<AuthorResponse>> listAuthorsQueryListQueryHandler, CommandHandler<CreateAuthorCommand, CreatedAuthorResponse> createAuthorComamndHandler) {
+    public AuthorsController(QueryHandler<ListAuthorsQuery, List<AuthorResponse>> listAuthorsQueryListQueryHandler,
+                             CommandHandler<CreateAuthorCommand, CreatedAuthorResponse> createAuthorComamndHandler) {
         this.listAuthorsQueryListQueryHandler = listAuthorsQueryListQueryHandler;
         this.createAuthorComamndHandler = createAuthorComamndHandler;
     }

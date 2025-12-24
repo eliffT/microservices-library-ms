@@ -34,13 +34,12 @@ public class UserFine {
         this.userId = event.userId();
         this.amount = event.amount();
         this.isPaid = false; // Başlangıçta ödenmemiş (hardcoded değer)
-        // this.createdAt = OffsetDateTime.now(); // Eğer entity'de @CreationTimestamp kullanıyorsanız bu satır gereksizdir.
+
     }
 
     public UUID id() {
         return id;
     }
-
     public void setId(UUID id) {
         this.id = id;
     }
@@ -48,7 +47,6 @@ public class UserFine {
     public UUID userId() {
         return userId;
     }
-
     public void setUserId(UUID userId) {
         this.userId = userId;
     }
@@ -56,7 +54,6 @@ public class UserFine {
     public BigDecimal amount() {
         return amount;
     }
-
     public void setAmount(BigDecimal amount) {
         this.amount = amount;
     }
@@ -64,7 +61,6 @@ public class UserFine {
     public boolean isPaid() {
         return isPaid;
     }
-
     public void setPaid(boolean paid) {
         isPaid = paid;
     }

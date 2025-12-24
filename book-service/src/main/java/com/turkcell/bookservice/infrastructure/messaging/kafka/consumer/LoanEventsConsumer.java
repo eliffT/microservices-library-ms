@@ -36,22 +36,22 @@ public class LoanEventsConsumer {
             // (LoanCreatedEvent veya LoanReturnedEvent) zaten dönüştürmüş olmalı.
 
             if (event instanceof LoanCreatedEvent loanCreatedEvent) {
-                System.out.println("INFO: LoanCreatedEvent alındı. Kitap ID: " + loanCreatedEvent.bookId());
+                System.out.println("INFO: LoanCreatedEvent received. Book ID: " + loanCreatedEvent.bookId());
                 createdListener.handle(loanCreatedEvent);
 
             } else if (event instanceof LoanReturnedEvent loanReturnedEvent) {
-                System.out.println("INFO: LoanReturnedEvent alındı. Kitap ID: " + loanReturnedEvent.bookId());
+                System.out.println("INFO: LoanReturnedEvent received. Book ID:" + loanReturnedEvent.bookId());
                 returnedListener.handle(loanReturnedEvent);
             } else {
                 // Topic'te beklemediğimiz bir DomainEvent tipi geldi.
-                System.err.println("WARN: Bilinmeyen DomainEvent tipi atlanıyor: " + event.getClass().getSimpleName());
+                System.err.println("WARN: Unknown DomainEvent type is skipped: " + event.getClass().getSimpleName());
             }
 
         } catch (Exception e) {
             // BusinessException veya Database hatası
-            System.err.println("CRITICAL ERROR: Loan Event işlenirken hata: " + e.getMessage());
+            System.err.println("CRITICAL ERROR: Error while processing Loan Event: " + e.getMessage());
             // Transactional Outbox/Inbox desenini takip edebilmek için RuntimeException fırlatılır.
-            throw new RuntimeException("Loan Event işleme hatası: " + e.getMessage(), e);
+            throw new RuntimeException("Loan Event processing error: " + e.getMessage(), e);
         }
 
     }

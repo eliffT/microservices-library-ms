@@ -18,7 +18,7 @@ public interface UserQueryPort {
      * (örn. BANNED kontrolü) için kullanılır.
      **/
 
-    // 2. Metot imzası: Daha önce tartıştığımız Port'un tanımını kullanır.
+    // 2. Metot imzası: Port'un tanımını kullanır.
     //    Feign, bu metot çağrıldığında otomatik olarak HTTP GET isteği gönderir.
     @GetMapping("/{id}/status")
     String getMembershipLevel(@PathVariable("id") UUID id);

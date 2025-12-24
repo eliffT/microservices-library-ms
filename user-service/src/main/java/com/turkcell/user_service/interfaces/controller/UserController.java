@@ -27,7 +27,8 @@ public class UserController {
     }
 
     @PutMapping("/update/{id}")
-    public UserResponse updateUser(@PathVariable UUID id, @Valid @RequestBody UserRequest userRequest) {
+    public UserResponse updateUser(@PathVariable UUID id,
+                                   @Valid @RequestBody UserRequest userRequest) {
         return userService.updateUser(id, userRequest);
     }
 
@@ -47,12 +48,14 @@ public class UserController {
     }
 
     @GetMapping
-    public UserResponse findUserByEmail(@Valid @RequestParam String status, @Valid @RequestParam String email) {
+    public UserResponse findUserByEmail(@Valid @RequestParam String status,
+                                        @Valid @RequestParam String email) {
         return userService.findUserByEmail(status, email);
     }
 
     @PutMapping("{id}/status")
-    public UserResponse changeUserStatus(@PathVariable UUID id, @Valid @RequestParam String value) {
+    public UserResponse changeUserStatus(@PathVariable UUID id,
+                                         @Valid @RequestParam String value) {
         return userService.changeUserStatus(id, value);
     }
 

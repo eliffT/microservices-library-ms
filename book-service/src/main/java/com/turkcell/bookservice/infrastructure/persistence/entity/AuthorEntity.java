@@ -29,7 +29,6 @@ public class AuthorEntity {
     public UUID id() {
         return id;
     }
-
     public void setId(UUID id) {
         this.id = id;
     }
@@ -37,7 +36,6 @@ public class AuthorEntity {
     public String fullName() {
         return fullName;
     }
-
     public void setFullName(String fullName) {
         this.fullName = fullName;
     }
@@ -45,7 +43,6 @@ public class AuthorEntity {
     public List<BookEntity> books() {
         return books;
     }
-
     public void setBooks(List<BookEntity> books) {
         this.books = books;
     }

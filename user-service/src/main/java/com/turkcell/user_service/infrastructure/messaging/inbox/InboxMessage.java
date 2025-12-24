@@ -31,20 +31,14 @@ public class InboxMessage {
     public InboxMessage() {}
 
     public InboxMessage(UUID eventId, UUID aggregateId, String aggregateType, OffsetDateTime now) {
-        // 1. Birincil Anahtarı (eventId) manuel olarak ata: Hatanın çözümü budur.
         this.eventId = eventId;
-
-        // 2. Diğer alanları ata.
         this.aggregateId = aggregateId;
         this.aggregateType = aggregateType;
-
-        // 3. Tarih alanlarını ayarla
-        this.createdAt = OffsetDateTime.now(); // Oluşturulma zamanı (isteğe bağlı olarak now olabilir)
+        this.createdAt = OffsetDateTime.now();
         this.processedAt = now;
     }
 
     // Getters and Setters
-
     public UUID getEventId() { return eventId; }
     public void setEventId(UUID eventId) { this.eventId = eventId; }
 

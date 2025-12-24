@@ -3,8 +3,8 @@ import com.turkcell.common.events.DomainEvent;
 
 import java.util.List;
 
-public interface EventPublisher {
+// Verilen Domain Event'i dış mesajlaşma sistemine asenkron olarak yayımlar.
 
-//Verilen Domain Event'i dış mesajlaşma sistemine asenkron olarak yayımlar.
+public interface EventPublisher {
     void publish(List<DomainEvent> event);
 }

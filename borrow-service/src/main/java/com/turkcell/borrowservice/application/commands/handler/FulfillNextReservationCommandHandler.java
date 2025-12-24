@@ -32,7 +32,7 @@ public class FulfillNextReservationCommandHandler {
         if (nextReservation.isPresent()) {
             Reservation reservation = nextReservation.get();
 
-            // 2. DOMAIN ÇAĞRISI: Pickup penceresi ata
+            // 2. DOMAIN ÇAĞRISI
             reservation.fulfill(PICKUP_HOURS);
 
             // 3. AGGREGATE PERSISTENCE

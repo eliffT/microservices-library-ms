@@ -16,7 +16,7 @@ import java.util.UUID;
 public class FineController {
 
     private final PayFineCommandHandler payHandler;
-    private final ListUserFinesQueryHandler listHandler; // Yeni
+    private final ListUserFinesQueryHandler listHandler;
 
     public FineController(PayFineCommandHandler payHandler, ListUserFinesQueryHandler listHandler) {
         this.payHandler = payHandler;

@@ -47,7 +47,7 @@ public class GlobalExceptionHandler {
                 .map(error -> error.getField() + ": " + error.getDefaultMessage())
                 .collect(Collectors.joining("; "));
 
-        ApiErrorResponse response = new ApiErrorResponse("Doğrulama Hatası: " + detailedMessage, "VALIDATION_ERROR", null);
+        ApiErrorResponse response = new ApiErrorResponse("Validation Error: " + detailedMessage, "VALIDATION_ERROR", null);
 
         return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST); // 400
     }
@@ -60,6 +60,6 @@ public class GlobalExceptionHandler {
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR) // 500
     public ApiErrorResponse handleGeneralException(Exception ex) {
         System.err.println("Unforeseen Error: " + ex.getMessage());
-        return new ApiErrorResponse("Beklenmeyen bir hata oluştu.", "UNEXPECTED_ERROR", null);
+        return new ApiErrorResponse("An unexpected error occurred.", "UNEXPECTED_ERROR", null);
     }
 }

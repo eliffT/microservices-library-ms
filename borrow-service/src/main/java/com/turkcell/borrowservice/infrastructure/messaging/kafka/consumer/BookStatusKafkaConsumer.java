@@ -41,13 +41,13 @@ public class BookStatusKafkaConsumer {
 
             } else {
                 // Topic'te beklemediğimiz bir event tipi geldi.
-                System.err.println("WARN: Bilinmeyen Inventory Event tipi atlanıyor: " + event.getClass().getSimpleName());
+                System.err.println("WARN: Unknown Inventory Event type is being skipped: " + event.getClass().getSimpleName());
             }
 
         } catch (Exception e) {
             System.err.println("CRITICAL ERROR: Failed to process event in InventoryUpdateListener: " + e.getMessage());
             // RuntimeException fırlatılması, Kafka'da retry mekanizmasını tetikler.
-            throw new RuntimeException("Inventory Event işlenirken hata oluştu.", e);
+            throw new RuntimeException("An error occurred while processing the Inventory Event.", e);
         }
     }
 
