@@ -36,3 +36,8 @@ Bu proje, **Domain-Driven Design (DDD)** ve **Command Query Responsibility Segre
 4.  **Stok/Rezervasyon:** Kitap stokta varsa (`availableCopies > 0`) ödünç verilir; stok sıfırsa (`availableCopies == 0`) **Rezervasyon** açılır.
 5.  **Gecikme Cezası:** İade tarihi (`returnDate`), teslim tarihini (`dueDate`) aşarsa **`Fine`** Aggregate Root'u oluşturulur.
 6.  **Stok Güncelleme:** `LoanCreatedEvent` ile stok artar (Asenkron, Book Service içinde).
+
+
+## 🔄 Sistem Akışı
+
+![Kütüphane Sistemi Akış Diyagramı](flow.png)
