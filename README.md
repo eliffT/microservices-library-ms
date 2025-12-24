@@ -39,5 +39,8 @@ Bu proje, **Domain-Driven Design (DDD)** ve **Command Query Responsibility Segre
 
 
 ## 🔄 Sistem Akışı
+Sistem üzerindeki ödünç alma, rezervasyon ve iade süreçlerinin mikroservisler arasındaki dağıtık yönetimi aşağıdaki diyagramda detaylandırılmıştır: 
 
 ![Kütüphane Sistemi Akış Diyagramı](flow.png)
+
+>  Bu şema; API Gateway üzerinden gelen isteklerin servisler arası asenkron iletişim (Kafka) ve veri tutarlılığı (Transactional Inbox/Outbox) prensiplerine göre nasıl işlendiğini göstermektedir.
