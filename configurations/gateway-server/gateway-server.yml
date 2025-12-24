@@ -1,24 +1,26 @@
 spring:
   cloud:
     gateway:
-      routes:
-         # Book Service Yönlendirmesi
-        - id: book-service
-          uri: lb://BOOK-SERVICE
-          predicates:
-            - Path=/api/v1/books/**
+      server:
+        webflux:
+          routes:
+             # Book Service Yönlendirmesi
+            - id: book-service
+              uri: lb://BOOK-SERVICE
+              predicates:
+                - Path=/api/v1/books/**
 
-        # Borrow Service Yönlendirmesi
-        - id: borrow-service
-          uri: lb://BORROW-SERVICE
-          predicates:
-            - Path=/api/v1/loans/**
+            # Borrow Service Yönlendirmesi
+            - id: borrow-service
+              uri: lb://BORROW-SERVICE
+              predicates:
+                - Path=/api/v1/loans/**
 
-        # User Service Yönlendirmesi
-        - id: user-service
-          uri: lb://USER-SERVICE
-          predicates:
-            - Path=/api/v1/users/**
+            # User Service Yönlendirmesi
+            - id: user-service
+              uri: lb://USER-SERVICE
+              predicates:
+                - Path=/api/v1/users/**
 
 eureka:
   client:
