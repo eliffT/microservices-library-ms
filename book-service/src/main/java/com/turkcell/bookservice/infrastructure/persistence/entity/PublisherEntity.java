@@ -25,10 +25,10 @@ public class PublisherEntity {
     public PublisherEntity(UUID id) {
         this.id = id;
     }
+
     public UUID id() {
         return id;
     }
-
     public void setId(UUID id) {
         this.id = id;
     }
@@ -36,7 +36,6 @@ public class PublisherEntity {
     public String name() {
         return name;
     }
-
     public void setName(String name) {
         this.name = name;
     }
@@ -44,7 +43,6 @@ public class PublisherEntity {
     public List<BookEntity> books() {
         return books;
     }
-
     public void setBooks(List<BookEntity> books) {
         this.books = books;
     }

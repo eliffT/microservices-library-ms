@@ -38,7 +38,6 @@ public class FineEntity {
     public UUID getId() {
         return id;
     }
-
     public void setId(UUID id) {
         this.id = id;
     }
@@ -46,7 +45,6 @@ public class FineEntity {
     public UUID getUserId() {
         return userId;
     }
-
     public void setUserId(UUID userId) {
         this.userId = userId;
     }
@@ -54,7 +52,6 @@ public class FineEntity {
     public UUID getLoanId() {
         return loanId;
     }
-
     public void setLoanId(UUID loanId) {
         this.loanId = loanId;
     }
@@ -62,7 +59,6 @@ public class FineEntity {
     public BigDecimal getAmount() {
         return amount;
     }
-
     public void setAmount(BigDecimal amount) {
         this.amount = amount;
     }
@@ -70,7 +66,6 @@ public class FineEntity {
     public String getReason() {
         return reason;
     }
-
     public void setReason(String reason) {
         this.reason = reason;
     }
@@ -78,7 +73,6 @@ public class FineEntity {
     public OffsetDateTime getCreatedAt() {
         return createdAt;
     }
-
     public void setCreatedAt(OffsetDateTime createdAt) {
         this.createdAt = createdAt;
     }
@@ -86,7 +80,6 @@ public class FineEntity {
     public OffsetDateTime getPaymentDate() {
         return paymentDate;
     }
-
     public void setPaymentDate(OffsetDateTime paymentDate) {
         this.paymentDate = paymentDate;
     }
@@ -94,7 +87,6 @@ public class FineEntity {
     public boolean isPaid() {
         return isPaid;
     }
-
     public void setPaid(boolean paid) {
         isPaid = paid;
     }

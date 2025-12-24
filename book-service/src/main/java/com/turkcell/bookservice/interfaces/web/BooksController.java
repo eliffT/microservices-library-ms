@@ -26,7 +26,9 @@ public class BooksController {
     private final CommandHandler<CreateBookCommand, CreatedBookResponse> createBookCommandHandler;
     private final CommandHandler<DeleteBookCommand, Void> deleteBookCommandHandler;
 
-    public BooksController(QueryHandler<ListBooksQuery, List<BookResponse>> listBooksQueryListQueryHandler, CommandHandler<CreateBookCommand, CreatedBookResponse> createBookComamndHandler, CommandHandler<DeleteBookCommand, Void> deleteBookComamndHandler) {
+    public BooksController(QueryHandler<ListBooksQuery, List<BookResponse>> listBooksQueryListQueryHandler,
+                           CommandHandler<CreateBookCommand, CreatedBookResponse> createBookComamndHandler,
+                           CommandHandler<DeleteBookCommand, Void> deleteBookComamndHandler) {
         this.listBooksQueryListQueryHandler = listBooksQueryListQueryHandler;
         this.createBookCommandHandler = createBookComamndHandler;
         this.deleteBookCommandHandler = deleteBookComamndHandler;

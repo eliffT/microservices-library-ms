@@ -6,7 +6,7 @@ spring:
           routes:
              # Book Service Yönlendirmesi
             - id: book-service
-              uri: lb://book-service
+              uri: lb://BOOK-SERVICE
               predicates:
                 - Path=/api/v1/books/**
 
@@ -18,7 +18,7 @@ spring:
 
             # User Service Yönlendirmesi
             - id: user-service
-              uri: lb://user-service
+              uri: lb://USER-SERVICE
               predicates:
                 - Path=/api/v1/users/**
 

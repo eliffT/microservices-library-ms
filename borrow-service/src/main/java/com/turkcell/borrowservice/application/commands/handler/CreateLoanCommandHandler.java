@@ -63,14 +63,14 @@ public class CreateLoanCommandHandler {
                 List.of(LoanStatus.BORROWED, LoanStatus.LATE)
         );
         if (openLoanCount >= allowedLimit)
-            throw new BusinessException("Kural İhlali: Üye, " + allowedLimit + " olan açık ödünç limitine ulaştı.");
+            throw new BusinessException("Rule Violation: The member has reached their available loan limit.");
 
         // 6. Stock kontrolü
         boolean isAvailable = bookReadModelRepository.isBookAvailable(command.bookId());
         int stock = bookReadModelRepository.getAvailableStock(command.bookId());
 
         if (!isAvailable || stock <= 0) {
-            throw new RuntimeException("Kitap şu an ödünç verilebilir durumda değil (Stok yetersiz).");
+            throw new RuntimeException("The book is currently unavailable for loan (out of stock).");
         }
 
         // 7. LOAN OLUŞTURMA

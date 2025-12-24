@@ -98,7 +98,7 @@ public class Loan extends BaseAggregateRoot {
             status = LoanStatus.LATE;
             return true;
         }
-        return false; // Gecikme yoksa false
+        return false;
     }
 
     //Getters

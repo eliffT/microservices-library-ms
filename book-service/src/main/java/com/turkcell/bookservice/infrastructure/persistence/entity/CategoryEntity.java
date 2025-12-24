@@ -30,7 +30,6 @@ public class CategoryEntity {
     public UUID id() {
         return id;
     }
-
     public void setId(UUID id) {
         this.id = id;
     }
@@ -38,7 +37,6 @@ public class CategoryEntity {
     public String name() {
         return name;
     }
-
     public void setName(String name) {
         this.name = name;
     }
@@ -46,13 +44,11 @@ public class CategoryEntity {
     public List<BookEntity> books() {
         return books;
     }
-
     public void setBooks(List<BookEntity> books) {this.books = books;}
 
     public String description() {
         return description;
     }
-
     public void setDescription(String description) {
         this.description = description;
     }

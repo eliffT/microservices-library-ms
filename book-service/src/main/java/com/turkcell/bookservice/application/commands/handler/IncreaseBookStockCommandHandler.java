@@ -49,13 +49,12 @@ public class IncreaseBookStockCommandHandler implements LoanReturnedEventListene
     public void handle(BookStockCommand command) {
         try {
             // INBOX KONTROLÜ VE KAYDI (Idempotency)
-            // Aynı event ID'si gelirse DataIntegrityViolationException fırlatır.
             InboxMessage inboxMessage = new InboxMessage(command.eventId(), command.bookId(), "BOOK");
             inboxRepository.saveAndFlush(inboxMessage);
 
             // STOK ARTIŞI
             Book book = bookRepository.findById(DomainId.from(command.bookId()))
-                    .orElseThrow(() -> new IllegalArgumentException("İade edilecek kitap bulunamadı."));
+                    .orElseThrow(() -> new IllegalArgumentException("No books were found to be returned."));
 
             book.increaseStock(1);
 
@@ -70,11 +69,9 @@ public class IncreaseBookStockCommandHandler implements LoanReturnedEventListene
             book.clearDomainEvents();
 
         } catch (DataIntegrityViolationException e) {
-            // Aynı olay ID'si zaten işlenmiş. İşlem atomik olarak atlanır.
-            System.err.println("WARN: LoanReturnedEvent zaten işlenmiş, stok artışı atlandı. ID: " + command.eventId());
+            System.err.println("WARN: LoanReturnedEvent has already been processed, ID: " + command.eventId());
         } catch (Exception e) {
-            // Kritik hata: Kafka'da retry tetiklenir.
-            throw new RuntimeException("Stok artırma işlemi başarısız.", e);
+            throw new RuntimeException("The inventory increase attempt failed.", e);
         }
     }
 

@@ -14,6 +14,7 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 
 // Bu service, Kafka Consumer tarafından çağrıldığı için transactional olmalıdır.
+
 @Service
 public class FineEventListenerImpl implements FineEventListener {
     private final UserFineRepository userFineRepository;

@@ -42,18 +42,18 @@ public class CreateReservationCommandHandler {
         String memberStatus = userQueryPort.getMembershipLevel(command.userId());
 
         if (memberStatus.equals("BANNED")) {
-            // Business Rule 3: BANNED üyeler ödünç/rezervasyon yapamaz.
+            // Business Rule : BANNED üyeler ödünç/rezervasyon yapamaz.
             throw new BusinessException("User ID: " + command.userId() + " is BANNED and cannot create a reservation.");
         }
 
-        // Kural A: Üyenin genel cezası varsa rezervasyon yapamaz (Önceki kuralınız, geçerliliğini korur).
+        // Kural A: Üyenin genel cezası varsa rezervasyon yapamaz.
         if (fineRepository.existsByUserIdAndIsPaid(command.userId(), false)) {
-            throw new BusinessException("Kural İhlali: Kullanıcının ödenmemiş cezası bulunmaktadır. Rezervasyon yapılamaz.");
+            throw new BusinessException("Rule Violation: The user has outstanding fines. Reservations cannot be made.");
         }
 
-        // Kural B: Üyenin aynı kitap için ACTIVE rezervasyonu var mı? (Kural 2 ve 3)
+        // Kural B: Üyenin aynı kitap için ACTIVE rezervasyonu var mı?
         if (reservationRepository.existsByUserIdAndBookIdAndStatus(command.userId(), command.bookId(), ReservationStatus.ACTIVE)) {
-            throw new BusinessException("Kural İhlali: Kullanıcının bu kitap için zaten aktif bir rezervasyonu bulunmaktadır.");
+            throw new BusinessException("Rule Violation: The user already has an active reservation for this book.");
         }
 
         // Kural C: availableCopies == 0 değilse RET (Stok varsa direkt ödünç alınmalı - Kural 1'in tersi)
@@ -61,18 +61,18 @@ public class CreateReservationCommandHandler {
 
         if (availableStock > 0) {
             // Business logic: Stok varsa rezervasyon yapılmaz, direkt ödünç alınır.
-            throw new BusinessException("Kitap şu an stokta mevcut. Lütfen ödünç alınız.");
+            throw new BusinessException("The book is currently in stock. Please borrow it.");
         }
 
 
-        // 2. DOMAIN ÇAĞRISI (Aggregate Oluşturma)
+        // DOMAIN ÇAĞRISI (Aggregate Oluşturma)
         // Yeni rezervasyon expireAt=null olarak oluşturulur.
         Reservation reservation = Reservation.create(command.userId(), command.bookId());
 
-        // 3. AGGREGATE PERSISTENCE
+        // AGGREGATE PERSISTENCE
         Reservation savedReservation = reservationRepository.save(reservation);
 
-        // 4. OUTBOX KAYDI
+        //  OUTBOX KAYDI
         eventPublisher.publish(reservation.getDomainEvents());
         reservation.clearDomainEvents();
 
