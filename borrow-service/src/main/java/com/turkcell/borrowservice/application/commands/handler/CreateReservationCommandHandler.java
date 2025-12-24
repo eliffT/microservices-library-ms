@@ -2,8 +2,8 @@ package com.turkcell.borrowservice.application.commands.handler;
 
 import com.turkcell.borrowservice.application.commands.CreateReservationCommand;
 import com.turkcell.borrowservice.application.exceptions.BusinessException;
+import com.turkcell.borrowservice.application.ports.BookReadModelRepository;
 import com.turkcell.borrowservice.application.ports.output.eventproducer.EventPublisher;
-import com.turkcell.borrowservice.application.ports.output.external.BookQueryPort;
 import com.turkcell.borrowservice.application.ports.output.external.UserQueryPort;
 import com.turkcell.borrowservice.domain.model.Reservation;
 import com.turkcell.borrowservice.domain.model.enumstatus.ReservationStatus;
@@ -20,22 +20,22 @@ public class CreateReservationCommandHandler {
     private final EventPublisher eventPublisher;
     private final FineRepository fineRepository;
     private final UserQueryPort userQueryPort; // Feign Client
-    private final BookQueryPort bookQueryPort;
+    private final BookReadModelRepository bookReadModelRepository;
 
     public CreateReservationCommandHandler(ReservationRepository reservationRepository,
                                            EventPublisher eventPublisher,
                                            FineRepository fineRepository,
-                                           UserQueryPort userQueryPort, BookQueryPort bookQueryPort) {
+                                           UserQueryPort userQueryPort,
+                                           BookReadModelRepository bookReadModelRepository) {
         this.reservationRepository = reservationRepository;
         this.eventPublisher = eventPublisher;
         this.fineRepository = fineRepository;
         this.userQueryPort = userQueryPort;
-        this.bookQueryPort = bookQueryPort;
+        this.bookReadModelRepository = bookReadModelRepository;
     }
 
     @Transactional
     public UUID handle(CreateReservationCommand command) {
-
 
 
         // KRİTİK KURAL: BANNED KONTROLÜ (Senkron API Çağrısı)
@@ -57,15 +57,13 @@ public class CreateReservationCommandHandler {
         }
 
         // Kural C: availableCopies == 0 değilse RET (Stok varsa direkt ödünç alınmalı - Kural 1'in tersi)
-        //  BookQueryPort, kitabın anlık (Hard Consistency) stok durumunu verir.
-        int availableStock = bookQueryPort.getAvailableCopies(command.bookId());
+        int availableStock = bookReadModelRepository.getAvailableStock(command.bookId());
 
         if (availableStock > 0) {
-            // Eğer stok varsa, rezervasyon yerine direkt ödünç alma önerilir.
-            throw new BusinessException("Kural İhlali: Kitap stokta mevcut. Lütfen direkt ödünç alma işlemi yapın.");
+            // Business logic: Stok varsa rezervasyon yapılmaz, direkt ödünç alınır.
+            throw new BusinessException("Kitap şu an stokta mevcut. Lütfen ödünç alınız.");
         }
 
-        // --- Kurallar Başarılı (Stok 0 veya <0) ---
 
         // 2. DOMAIN ÇAĞRISI (Aggregate Oluşturma)
         // Yeni rezervasyon expireAt=null olarak oluşturulur.

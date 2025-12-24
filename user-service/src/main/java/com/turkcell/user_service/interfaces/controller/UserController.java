@@ -55,4 +55,9 @@ public class UserController {
     public UserResponse changeUserStatus(@PathVariable UUID id, @Valid @RequestParam String value) {
         return userService.changeUserStatus(id, value);
     }
+
+    @GetMapping("/{id}/status")
+    public String getUserStatus(@PathVariable UUID id) {
+        return userService.getUserById(id).getMembershipLevel().toString();
+    }
 }

@@ -3,8 +3,8 @@ package com.turkcell.borrowservice.application.commands.handler;
 
 import com.turkcell.borrowservice.application.commands.BorrowBookCommand;
 import com.turkcell.borrowservice.application.exceptions.BusinessException;
+import com.turkcell.borrowservice.application.ports.BookReadModelRepository;
 import com.turkcell.borrowservice.application.ports.output.eventproducer.EventPublisher;
-import com.turkcell.borrowservice.application.ports.output.external.BookQueryPort;
 import com.turkcell.borrowservice.application.ports.output.external.UserQueryPort;
 import com.turkcell.borrowservice.domain.model.Loan;
 import com.turkcell.borrowservice.domain.model.enumstatus.LoanStatus;
@@ -23,17 +23,17 @@ public class CreateLoanCommandHandler {
     private final FineRepository fineRepository;
     private final EventPublisher eventPublisher;
     private final UserQueryPort userQueryPort;
-    private final BookQueryPort bookQueryPort;  // Feign Client
+    private final BookReadModelRepository bookReadModelRepository;
 
     public CreateLoanCommandHandler(LoanRepository loanRepository,
                                     FineRepository fineRepository,
                                     EventPublisher eventPublisher,
-                                    UserQueryPort userQueryPort, BookQueryPort bookQueryPort) {
+                                    UserQueryPort userQueryPort, BookReadModelRepository bookReadModelRepository) {
         this.loanRepository = loanRepository;
         this.fineRepository = fineRepository;
         this.eventPublisher = eventPublisher;
         this.userQueryPort = userQueryPort;
-        this.bookQueryPort = bookQueryPort;
+        this.bookReadModelRepository = bookReadModelRepository;
     }
 
     @Transactional
@@ -65,12 +65,12 @@ public class CreateLoanCommandHandler {
         if (openLoanCount >= allowedLimit)
             throw new BusinessException("Kural İhlali: Üye, " + allowedLimit + " olan açık ödünç limitine ulaştı.");
 
-        // 6. KRİTİK KURAL: ANLIK STOK KONTROLÜ (Feign Client kullanılıyor)
-        int availableStock = bookQueryPort.getAvailableCopies(command.bookId());
+        // 6. Stock kontrolü
+        boolean isAvailable = bookReadModelRepository.isBookAvailable(command.bookId());
+        int stock = bookReadModelRepository.getAvailableStock(command.bookId());
 
-        if (availableStock <= 0) {
-            // Eğer stok 0 ise, ödünç verilmez. Bu durumda rezervasyon önerilmelidir.
-            throw new BusinessException("Kural İhlali: Kitap stokta mevcut değil. Lütfen rezervasyon yapın.");
+        if (!isAvailable || stock <= 0) {
+            throw new RuntimeException("Kitap şu an ödünç verilebilir durumda değil (Stok yetersiz).");
         }
 
         // 7. LOAN OLUŞTURMA
