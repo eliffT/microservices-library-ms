@@ -20,7 +20,7 @@ public interface UserQueryPort {
 
     // 2. Metot imzası: Daha önce tartıştığımız Port'un tanımını kullanır.
     //    Feign, bu metot çağrıldığında otomatik olarak HTTP GET isteği gönderir.
-    @GetMapping("/{userId}/status")
-    String getMembershipLevel(@PathVariable("userId") UUID userId);
+    @GetMapping("/{id}/status")
+    String getMembershipLevel(@PathVariable("id") UUID id);
 
 }

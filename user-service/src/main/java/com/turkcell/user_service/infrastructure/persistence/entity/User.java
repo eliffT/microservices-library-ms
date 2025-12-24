@@ -11,7 +11,8 @@ import java.util.UUID;
 public class User {
 
     @Id
-    @Column(columnDefinition = "uuid")
+    @GeneratedValue
+    @Column(columnDefinition = "uuid", updatable = false, nullable = false)
     private UUID id;
 
     @Column(name = "first_name", nullable = false, length = 255)

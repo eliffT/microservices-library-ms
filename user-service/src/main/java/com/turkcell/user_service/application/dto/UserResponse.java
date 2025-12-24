@@ -1,6 +1,8 @@
 package com.turkcell.user_service.application.dto;
 
 
+import com.turkcell.user_service.infrastructure.persistence.entity.MembershipLevel;
+
 import java.util.UUID;
 
 public class UserResponse {
@@ -8,6 +10,7 @@ public class UserResponse {
     private UUID id;
     private String firstName;
     private String lastName;
+    private MembershipLevel membershipLevel;
     private String email;
     private String phone;
 
@@ -63,5 +66,11 @@ public class UserResponse {
         this.phone = phone;
     }
 
+    public MembershipLevel getMembershipLevel() {
+        return membershipLevel;
+    }
 
+    public void setMembershipLevel(MembershipLevel membershipLevel) {
+        this.membershipLevel = membershipLevel;
+    }
 }
