@@ -1,4 +1,7 @@
 eureka:
+  instance:
+    prefer-ip-address: true  # <--- BU SATIR OLMAZSA GATEWAY SERVİSİ BULAMAZ
+    instance-id: ${spring.application.name}:${spring.cloud.client.ip-address}:${server.port}
   client:
     service-url:
       defaultZone: http://localhost:8761/eureka/
